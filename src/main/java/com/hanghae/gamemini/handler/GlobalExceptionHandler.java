@@ -1,10 +1,10 @@
 package com.hanghae.gamemini.handler;
 
-import com.sparta.hanghaestartproject.dto.ErrorResponseDto;
-import com.sparta.hanghaestartproject.errorcode.CommonErrorCode;
-import com.sparta.hanghaestartproject.errorcode.ErrorCode;
-import com.sparta.hanghaestartproject.errorcode.UserErrorCode;
-import com.sparta.hanghaestartproject.exception.RestApiException;
+import com.hanghae.gamemini.dto.ErrorResponseDto;
+import com.hanghae.gamemini.errorcode.CommonStatusCode;
+import com.hanghae.gamemini.errorcode.StatusCode;
+import com.hanghae.gamemini.errorcode.UserStatusCode;
+import com.hanghae.gamemini.exception.RestApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,19 +21,23 @@ import javax.validation.ConstraintViolationException;
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      
+     // RestApiException 에러 핸들링
      @ExceptionHandler (RestApiException.class)
      public ResponseEntity<Object> handleCustomException(RestApiException e) {
-          ErrorCode errorCode = e.getErrorCode();
-          return handleExceptionInternal(errorCode);
+          
+          StatusCode statusCode = e.getErrorCode();
+          return handleExceptionInternal(statusCode);
      }
      
+     // IllegalArgumentException 에러 핸들링
      @ExceptionHandler(IllegalArgumentException.class)
      public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException e) {
           log.warn("handleIllegalArgument", e);
-          ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
-          return handleExceptionInternal(errorCode, e.getMessage());
+          StatusCode statusCode = CommonStatusCode.INVALID_PARAMETER;
+          return handleExceptionInternal(statusCode, e.getMessage());
      }
      
+     // MethodArgumentNotValid 에러 핸들링
      @Override
      protected ResponseEntity<Object> handleMethodArgumentNotValid(
                     MethodArgumentNotValidException e,
@@ -42,52 +46,57 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                     WebRequest request) {
           log.warn("handleMethodArgumentNotValid", e);
           String errorFieldName = e.getBindingResult().getFieldError().getField();
-          ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
+          StatusCode statusCode = CommonStatusCode.INVALID_PARAMETER;
           if(errorFieldName.equals("username")){
-               errorCode = UserErrorCode.WRONG_USERNAME_PATTERN;
+               statusCode = UserStatusCode.WRONG_USERNAME_PATTERN;
           }else if(errorFieldName.equals("password")){
-               errorCode = UserErrorCode.WRONG_PASSWORD_PATTERN;
+               statusCode = UserStatusCode.WRONG_PASSWORD_PATTERN;
           }
-          return handleExceptionInternal(errorCode);
+          return handleExceptionInternal(statusCode);
      }
      
+     // ConstraintViolationException 에러 핸들링
      @ExceptionHandler(ConstraintViolationException.class)
      public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException e) {
           log.warn("handleConstraintViolation", e);
-          ErrorCode errorCode = CommonErrorCode.INVALID_PARAMETER;
+          StatusCode statusCode = CommonStatusCode.INVALID_PARAMETER;
           String interpolatedMessage = e.getMessage().split("interpolatedMessage=\'")[1].split("\', propertyPath")[0];
           System.out.println(e.getMessage());
-          return handleExceptionInternal(errorCode, interpolatedMessage);
+          return handleExceptionInternal(statusCode, interpolatedMessage);
      }
      
+     // 그외 에러들 핸들링
      @ExceptionHandler({Exception.class})
      public ResponseEntity<Object> handleAllException(Exception ex) {
           log.warn("handleAllException", ex);
-          ErrorCode errorCode = CommonErrorCode.INTERNAL_SERVER_ERROR;
-          return handleExceptionInternal(errorCode);
+          StatusCode statusCode = CommonStatusCode.INTERNAL_SERVER_ERROR;
+          return handleExceptionInternal(statusCode);
      }
      
-     private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode) {
-          return ResponseEntity.status(errorCode.getStatusCode())
-               .body(makeErrorResponse(errorCode));
+     // ErrorCode 만 있는 에러 ResponseEntity 생성
+     private ResponseEntity<Object> handleExceptionInternal(StatusCode statusCode) {
+          return ResponseEntity.status(statusCode.getStatusCode())
+               // ErrorCode 만 있는 에러 responseEntity body만들기
+               .body(makeErrorResponse(statusCode));
      }
      
-     private ErrorResponseDto makeErrorResponse(ErrorCode errorCode) {
+     private ErrorResponseDto makeErrorResponse(StatusCode statusCode) {
           return ErrorResponseDto.builder()
-               .statusCode(errorCode.getStatusCode())
-               .msg(errorCode.getMsg())
+               .statusCode(statusCode.getStatusCode())
+               .statusMsg(statusCode.getStatusMsg())
                .build();
      }
      
-     private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode, String message) {
-          return ResponseEntity.status(errorCode.getStatusCode())
-               .body(makeErrorResponse(errorCode, message));
+     // ErrorCode + message따로 있는 에러 ResponseEntity 생성
+     private ResponseEntity<Object> handleExceptionInternal(StatusCode statusCode, String message) {
+          return ResponseEntity.status(statusCode.getStatusCode())
+               .body(makeErrorResponse(statusCode, message));
      }
      
-     private ErrorResponseDto makeErrorResponse(ErrorCode errorCode, String message) {
+     private ErrorResponseDto makeErrorResponse(StatusCode statusCode, String message) {
           return ErrorResponseDto.builder()
-               .statusCode(errorCode.getStatusCode())
-               .msg(message)
+               .statusCode(statusCode.getStatusCode())
+               .statusMsg(message)
                .build();
      }
 }

@@ -1,7 +1,7 @@
 package com.hanghae.gamemini.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.hanghaestartproject.errorcode.SecurityExceptionCode;
+import com.hanghae.gamemini.errorcode.SecurityExceptionCode;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,15 +25,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
      
      @Override
      protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-          
+     
+          // request header에서 토큰을 가져오기
           String token = jwtUtil.resolveToken(request);
           
           if(token != null) {
+               // 토큰 검증
                if(!jwtUtil.validateToken(token)){
                     jwtExceptionHandler(response, "Token Error", HttpStatus.UNAUTHORIZED.value());
                     return;
                }
+               // 토큰에서 유저정보 뽑기
                Claims info = jwtUtil.getUserInfoFromToken(token);
+               // subject로 저장한 username 값 SecurityContextHolder에 저장
                setAuthentication(info.getSubject());
           }
           filterChain.doFilter(request,response);
@@ -41,14 +45,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
      
      public void setAuthentication(String username) {
           SecurityContext context = SecurityContextHolder.createEmptyContext();
+          // 인증된 유저 생성
           Authentication authentication = jwtUtil.createAuthentication(username);
           context.setAuthentication(authentication);
           
+          // >> 여기서 설정한 것을 @AuthenticationPrincipal 여기서 뽑아쓸 수 있음
           SecurityContextHolder.setContext(context);
      }
      
+     // 토큰에러 예외처리
      public void jwtExceptionHandler(HttpServletResponse response, String msg, int statusCode) {
-          response.setStatus(statusCode);
+          response.setStatus(statusCode); // HttpStatus.UNAUTHORIZED.value()
           response.setContentType("application/json");
           try {
                String json = new ObjectMapper().writeValueAsString(new SecurityExceptionCode(msg, statusCode));

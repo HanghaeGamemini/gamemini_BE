@@ -1,19 +1,18 @@
 package com.hanghae.gamemini.exception;
 
-import com.sparta.hanghaestartproject.errorcode.ErrorCode;
+import com.hanghae.gamemini.errorcode.StatusCode;
 
 public class RestApiException extends RuntimeException{
      
      // 필드값
-     private final ErrorCode errorCode;
+     private final StatusCode statusCode;
      
      //getter
-     public ErrorCode getErrorCode(){
-          return this.errorCode;
+     public StatusCode getErrorCode(){
+          return this.statusCode;
      }
-     
      // 생성자
-     public RestApiException(ErrorCode errorCode){
-          this.errorCode = errorCode;
+     public RestApiException(StatusCode statusCode){
+          this.statusCode = statusCode;
      }
 }

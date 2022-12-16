@@ -1,9 +1,9 @@
 package com.hanghae.gamemini.jwt;
 
-import com.sparta.hanghaestartproject.entity.UserRoleEnum;
-import com.sparta.hanghaestartproject.security.UserDetailsServiceImpl;
+import com.hanghae.gamemini.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,51 +20,52 @@ import java.util.Date;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
      private final UserDetailsServiceImpl userDetailsService;
      
      // Header KEY 값
      public static final String AUTHORIZATION_HEADER = "Authorization";
-     // 사용자 권한 값의 KEY
-     public static final String AUTHORIZATION_KEY = "auth";
+     // nick 저장용 key
+     private static final String NICKNAME_KEY = "nick";
      // Token 식별자
      private static final String BEARER_PREFIX = "Bearer ";
      // 토큰 만료시간
      private static final long TOKEN_TIME = 60 * 60 * 1000L;
      
-     //생성자
-     public JwtUtil(UserDetailsServiceImpl userDetailsService){
-          this.userDetailsService = userDetailsService;
-     }
-     
      @Value ("${jwt.secret.key}")
      private String secretKey;
      private Key key;
+     // 암호화 알고리즘
      private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
      
      @PostConstruct
      public void init() {
+          // 비밀 키 만들기
           byte[] bytes = Base64.getDecoder().decode(secretKey);
           key = Keys.hmacShaKeyFor(bytes);
      }
      
-     // header 토큰을 가져오기
+     // header에서 토큰을 가져오기
      public String resolveToken(HttpServletRequest request) {
+          // 헤더에서 토큰값 가져오기
           String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+          // 값 제대로 된경우
           if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+               // 앞에 bearer 뒷부분 잘라오기
                return bearerToken.substring(7);
           }
           return null;
      }
      
      // 토큰 생성
-     public String createToken(String username, UserRoleEnum role) {
+     public String createToken(String username, String nickname) {
           Date date = new Date();
           
           return BEARER_PREFIX +
                Jwts.builder()
+                    // username 넣기
                     .setSubject(username)
-                    .claim(AUTHORIZATION_KEY, role)
                     .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                     .setIssuedAt(date)
                     .signWith(key, signatureAlgorithm)
