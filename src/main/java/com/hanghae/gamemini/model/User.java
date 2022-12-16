@@ -1,5 +1,6 @@
 package com.hanghae.gamemini.model;
 
+import com.hanghae.gamemini.dto.SignupRequestDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -26,4 +27,10 @@ public class User {
      
      @Column(nullable = false)
      private String nickname;
+     
+     public User(SignupRequestDto requestDto) {
+          this.username = requestDto.getUsername();
+          this.password = requestDto.getPassword();
+          this.nickname = requestDto.getNickname();
+     }
 }

@@ -3,7 +3,7 @@ package com.hanghae.gamemini.service;
 import com.hanghae.gamemini.dto.LoginRequestDto;
 import com.hanghae.gamemini.dto.ResponseDto;
 import com.hanghae.gamemini.dto.SignupRequestDto;
-import com.hanghae.gamemini.entity.User;
+import com.hanghae.gamemini.model.User;
 import com.hanghae.gamemini.jwt.JwtUtil;
 import com.hanghae.gamemini.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +48,7 @@ public class UserService {
             throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getNickname()));
         return new ResponseDto("로그인 성공", HttpStatus.OK.value());
     }
 }
