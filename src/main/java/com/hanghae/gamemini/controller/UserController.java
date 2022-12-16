@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.hanghae.gamemini.dto.LoginRequestDto;
-import com.hanghae.gamemini.dto.ResponseDto;
 import com.hanghae.gamemini.dto.SignupRequestDto;
 import com.hanghae.gamemini.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;

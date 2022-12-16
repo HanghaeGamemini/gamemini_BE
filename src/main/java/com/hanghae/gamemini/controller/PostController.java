@@ -1,21 +1,16 @@
 package com.hanghae.gamemini.controller;
 
 
-import com.hanghae.gamemini.dto.MsgResponseDto;
-import com.hanghae.gamemini.dto.PostListDto;
 import com.hanghae.gamemini.dto.PostRequestDto;
-import com.hanghae.gamemini.dto.PostResponseDto;
+import com.hanghae.gamemini.dto.PrivateResponseBody;
+import com.hanghae.gamemini.errorcode.CommonStatusCode;
+import com.hanghae.gamemini.security.UserDetailsImpl;
 import com.hanghae.gamemini.service.PostService;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import java.net.http.HttpHeaders;
-import java.util.List;
 
 
 @NoArgsConstructor
@@ -27,25 +22,33 @@ public class PostController {
 
     //전체조회
     @GetMapping("/post")
-    public List<PostListDto> readPost(){
-    return postService.readPsot();
+    public  ResponseEntity<PrivateResponseBody> getPost(){
+        return postService.getPsot();
+    }
+
+    //선택조회
+    @GetMapping("post/{id}")
+    public  ResponseEntity<PrivateResponseBody> detailPost(@PathVariable Long id){
+        return postService.detailPost(id);
     }
     //게시글 작성
     @PutMapping("/post")
-    public ResponseEntity<?> createPost(@RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal  UserDetailsImpl userDetails){
-        return postService.createPost(postRequestDto,userDetails.getUser());
+    public ResponseEntity<PrivateResponseBody> createPost(@RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        PrivateResponseBody privateResponseBody = new PrivateResponseBody();
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.createPost(postRequestDto,userDetails.getUser())), HttpStatus.OK);
     }
 
     //게시글 수정
     @PutMapping("/post/{id}")
-    public PostResponseDto updatePost(@PathVariable Long id , @RequestBody PostRequestDto postRequestDto, HttpServletRequest request){
-    return postService.updatePost(id, postRequestDto, request);
+    public ResponseEntity<PrivateResponseBody> updatePost(@PathVariable Long id , @RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    PrivateResponseBody privateResponseBody = new PrivateResponseBody();
+    return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK,postService.updatePost(id, postRequestDto,userDetails.getUser())),HttpStatus.OK);
     }
 
     //게시글 삭제
     @DeleteMapping("/post/{id}")
-    public MsgResponseDto deletePost(@PathVariable Long id, HttpServletRequest request ){
-        return postService.deletePost(id, request);
+    public ResponseEntity<PrivateResponseBody> deletePost(@PathVariable Long id,  @AuthenticationPrincipal UserDetailsImpl userDetails  ){
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK,postService.deletePost(id, userDetails.getUser())),HttpStatus.OK);
 
     }
 }

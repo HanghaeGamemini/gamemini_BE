@@ -1,7 +1,6 @@
 package com.hanghae.gamemini.service;
 
 import com.hanghae.gamemini.dto.LoginRequestDto;
-import com.hanghae.gamemini.dto.ResponseDto;
 import com.hanghae.gamemini.dto.SignupRequestDto;
 import com.hanghae.gamemini.errorcode.UserStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;

@@ -1,8 +1,10 @@
 package com.hanghae.gamemini.model;
 
 <<<<<<< HEAD
+import com.hanghae.gamemini.dto.SignupRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 
@@ -64,5 +66,4 @@ public class User {
           this.password = requestDto.getPassword();
           this.nickname = requestDto.getNickname();
      }
->>>>>>> f6ed22110bc03a21a8ffd17646954982b6905e55
 }
