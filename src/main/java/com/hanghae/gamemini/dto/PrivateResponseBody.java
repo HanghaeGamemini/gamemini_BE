@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-@Builder
 public class PrivateResponseBody<T> {
      private boolean success;
      private int statusCode;
