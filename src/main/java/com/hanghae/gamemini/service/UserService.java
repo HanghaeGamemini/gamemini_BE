@@ -3,6 +3,8 @@ package com.hanghae.gamemini.service;
 import com.hanghae.gamemini.dto.LoginRequestDto;
 import com.hanghae.gamemini.dto.ResponseDto;
 import com.hanghae.gamemini.dto.SignupRequestDto;
+import com.hanghae.gamemini.errorcode.UserStatusCode;
+import com.hanghae.gamemini.exception.RestApiException;
 import com.hanghae.gamemini.model.User;
 import com.hanghae.gamemini.jwt.JwtUtil;
 import com.hanghae.gamemini.repository.UserRepository;
@@ -23,10 +25,11 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public ResponseDto signup(SignupRequestDto requestDto) {
+    public ResponseDto signUp(SignupRequestDto requestDto) {
         Optional<User> found = userRepository.findByUsername(requestDto.getUsername());
         if (found.isPresent()){
-            return new ResponseDto("중복된 아이디입니다.", HttpStatus.BAD_REQUEST.value());
+            throw new RestApiException(UserStatusCode.OVERLAPPED_USERNAME);
+//            return new ResponseDto("중복된 아이디입니다.", HttpStatus.BAD_REQUEST.value());
         }
 
         userRepository.save(new User(requestDto));

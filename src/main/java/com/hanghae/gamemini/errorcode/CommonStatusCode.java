@@ -19,4 +19,5 @@ public enum CommonStatusCode implements StatusCode {
      private boolean success = false;
      private final String StatusMsg;
      private final int statusCode;
+     
 }

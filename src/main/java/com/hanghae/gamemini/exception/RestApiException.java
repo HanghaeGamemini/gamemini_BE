@@ -8,7 +8,7 @@ public class RestApiException extends RuntimeException{
      private final StatusCode statusCode;
      
      //getter
-     public StatusCode getErrorCode(){
+     public StatusCode getStatusCode(){
           return this.statusCode;
      }
      // 생성자

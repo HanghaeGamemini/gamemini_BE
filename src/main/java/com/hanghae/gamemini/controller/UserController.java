@@ -1,7 +1,11 @@
 package com.hanghae.gamemini.controller;
 
+import com.hanghae.gamemini.dto.PrivateResponseBody;
+import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,11 +13,8 @@ import com.hanghae.gamemini.dto.LoginRequestDto;
 import com.hanghae.gamemini.dto.ResponseDto;
 import com.hanghae.gamemini.dto.SignupRequestDto;
 import com.hanghae.gamemini.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -29,13 +30,13 @@ public class UserController {
      private final UserService userService;
      
      //ResponseEntity 사용 예시
-     /*
+     
      @PostMapping ("/signup")
-     public ResponseEntity<PrivateResponseBody> signup() {
+     public ResponseEntity<PrivateResponseBody> signup(@RequestBody @Valid SignupRequestDto requestDto) {
           PrivateResponseBody privateResponseBody = new PrivateResponseBody();
-          return new ResponseEntity<>(new PrivateResponseBody(true, CommonStatusCode.OK, userService.signUp()), HttpStatus.OK);
+          return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, userService.signUp(requestDto)), HttpStatus.OK);
      }
-     */
+     
      
      
      // AuthenticationPrincipal 사용예시
@@ -44,10 +45,6 @@ public class UserController {
      public String login(@AuthenticationPrincipal UserDetails userDetails)
       */
      
-     @PostMapping ("/signup")
-     public ResponseDto signup(@RequestBody @Valid SignupRequestDto requestDto) {
-          return userService.signup(requestDto);
-     }
      
      @PostMapping ("/login")
      public ResponseDto login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {

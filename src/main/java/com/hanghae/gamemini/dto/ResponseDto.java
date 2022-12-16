@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 public class ResponseDto {
     private String statusMsg;
     private int statusCode;
-
     private boolean success;
 
     public ResponseDto(String statusMsg, int statusCode) {

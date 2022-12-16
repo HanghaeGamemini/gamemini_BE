@@ -14,7 +14,9 @@ public enum UserStatusCode implements StatusCode {
      NO_USER("회원을 찾을 수 없습니다.",HttpStatus.NOT_FOUND.value()),
      WRONG_ADMIN_TOKEN("관리자 암호가 틀려 등록이 불가능합니다.", HttpStatus.BAD_REQUEST.value()),
      OVERLAPPED_USERNAME("중복된 username 입니다.", HttpStatus.BAD_REQUEST.value()),
+     임시이넘객체("임시객체입니다", HttpStatus.BAD_REQUEST.value()),
      INVALID_TOKEN("토큰이 유효하지 않습니다.", HttpStatus.BAD_REQUEST.value());
+     
      private final boolean success = false;
      private final String statusMsg;
      private final int statusCode;

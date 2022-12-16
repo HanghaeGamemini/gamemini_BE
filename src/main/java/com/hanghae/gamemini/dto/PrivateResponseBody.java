@@ -25,4 +25,11 @@ public class PrivateResponseBody<T> {
           this.statusMsg = statusCode.getStatusMsg();
           this.data = data;
      }
+     
+     public PrivateResponseBody(boolean success, StatusCode statusCode, T data){
+          this.success = statusCode.isSuccess();
+          this.statusCode = statusCode.getStatusCode();
+          this.statusMsg = statusCode.getStatusMsg();
+          this.data = data;
+     }
 }
