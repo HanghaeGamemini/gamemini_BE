@@ -31,6 +31,10 @@ public class UserService {
             throw new RestApiException(UserStatusCode.OVERLAPPED_USERNAME);
 //            return new ResponseDto("중복된 아이디입니다.", HttpStatus.BAD_REQUEST.value());
         }
+        
+//        User found1 = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(
+//             () -> new RestApiException(UserStatusCode.OVERLAPPED_USERNAME)
+//        );
 
         userRepository.save(new User(requestDto));
 
