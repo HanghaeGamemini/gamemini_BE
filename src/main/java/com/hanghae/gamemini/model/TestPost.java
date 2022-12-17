@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity(name = "post")
+@Entity(name = "testpost")
 @RequiredArgsConstructor
 @Getter
 public class TestPost extends Timestamped{

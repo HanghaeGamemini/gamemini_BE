@@ -1,13 +1,12 @@
 package com.hanghae.gamemini.service;
 
+import com.hanghae.gamemini.dto.PostRequestDto;
 import com.hanghae.gamemini.dto.PrivateResponseBody;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
-import com.hanghae.gamemini.model.User;
-import com.hanghae.gamemini.dto.PostRequestDto;
 import com.hanghae.gamemini.model.Post;
+import com.hanghae.gamemini.model.User;
 import com.hanghae.gamemini.repository.PostRepository;
-
 import com.hanghae.gamemini.util.SecurityUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
