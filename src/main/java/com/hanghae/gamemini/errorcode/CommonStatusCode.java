@@ -13,6 +13,7 @@ public enum CommonStatusCode implements StatusCode {
 
      POST_LIKE(true, "좋아요", HttpStatus.OK.value()),
      POST_LIKE_CANCEL(true, "좋아요취소", HttpStatus.OK.value()),
+     DELETE_COMMENT(true, "댓글 삭제 성공", HttpStatus.OK.value()),
 
      INVALID_PARAMETER("Invalid parameter included",HttpStatus.BAD_REQUEST.value()),
      INTERNAL_SERVER_ERROR("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR.value()),

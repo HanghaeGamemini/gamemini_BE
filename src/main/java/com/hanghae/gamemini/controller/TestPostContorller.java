@@ -20,7 +20,7 @@ public class TestPostContorller {
     private final TestPostService postService;
 
     @PostMapping("/testpost")
-    public ResponseEntity<PrivateResponseBody> post(@RequestBody TestPostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<?> post(@RequestBody TestPostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         postService.post(requestDto, userDetails.getUser());
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK), HttpStatus.OK);
     }

@@ -33,5 +33,4 @@ public class PrivateResponseBody<T> {
           this.data = data;
      }
 
-
 }
