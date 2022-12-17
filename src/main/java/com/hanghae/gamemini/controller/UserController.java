@@ -1,20 +1,19 @@
 package com.hanghae.gamemini.controller;
 
+import com.hanghae.gamemini.dto.LoginRequestDto;
 import com.hanghae.gamemini.dto.PrivateResponseBody;
-import com.hanghae.gamemini.errorcode.CommonStatusCode;
+import com.hanghae.gamemini.dto.SignupRequestDto;
+import com.hanghae.gamemini.errorcode.UserStatusCode;
 import com.hanghae.gamemini.repository.UserRepository;
+import com.hanghae.gamemini.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import com.hanghae.gamemini.dto.LoginRequestDto;
-import com.hanghae.gamemini.dto.ResponseDto;
-import com.hanghae.gamemini.dto.SignupRequestDto;
-import com.hanghae.gamemini.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -34,7 +33,8 @@ public class UserController {
      @PostMapping ("/signup")
      public ResponseEntity<PrivateResponseBody> signup(@RequestBody @Valid SignupRequestDto requestDto) {
           PrivateResponseBody privateResponseBody = new PrivateResponseBody();
-          return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, userService.signUp(requestDto)), HttpStatus.OK);
+          userService.signUp(requestDto);
+          return new ResponseEntity<>(new PrivateResponseBody(UserStatusCode.SIGNUP_OK), HttpStatus.OK);
      }
      
      
@@ -47,8 +47,8 @@ public class UserController {
      
      
      @PostMapping ("/login")
-     public ResponseDto login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
-          return userService.login(loginRequestDto, response);
-          
+     public ResponseEntity<PrivateResponseBody> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+          userService.login(loginRequestDto, response);
+          return new ResponseEntity<>(new PrivateResponseBody(UserStatusCode.LOGIN_OK), HttpStatus.OK);
      }
 }
