@@ -41,12 +41,13 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // cors 설정
+        http.cors();
         // CSRF 설정
         http.csrf().disable();
 
         // 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
         http.authorizeRequests()
                 // 토큰검증 필요없는 페이지 설정
                 .antMatchers(HttpMethod.POST, "/api/user/**").permitAll()
