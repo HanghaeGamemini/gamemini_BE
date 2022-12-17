@@ -14,15 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
 @RequestMapping ("/api/user")
 @RequiredArgsConstructor
 public class UserController {
-     
-     //     private final UserService userService;
+
      private final PasswordEncoder passwordEncoder;
      private final UserRepository userRepository;
      private final UserService userService;
@@ -58,5 +57,4 @@ public class UserController {
           userService.login(loginRequestDto, response);
           return new ResponseEntity<>(new PrivateResponseBody(UserStatusCode.USER_LOGIN_SUCCESS), HttpStatus.OK);
      }
-
 }
