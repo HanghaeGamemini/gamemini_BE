@@ -25,20 +25,11 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public ResponseDto signUp(SignupRequestDto requestDto) {
-        Optional<User> found = userRepository.findByUsername(requestDto.getUsername());
-        if (found.isPresent()){
-            throw new RestApiException(UserStatusCode.OVERLAPPED_USERNAME);
-//            return new ResponseDto("중복된 아이디입니다.", HttpStatus.BAD_REQUEST.value());
-        }
-        
-//        User found1 = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(
-//             () -> new RestApiException(UserStatusCode.OVERLAPPED_USERNAME)
-//        );
-
+    public void signUp(SignupRequestDto requestDto) {
+        User found1 = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(
+             () -> new RestApiException(UserStatusCode.OVERLAPPED_USERNAME)
+        );
         userRepository.save(new User(requestDto));
-
-        return new ResponseDto("회원가입 성공", HttpStatus.OK.value());
     }
 
     @Transactional

@@ -2,6 +2,7 @@ package com.hanghae.gamemini.controller;
 
 import com.hanghae.gamemini.dto.PrivateResponseBody;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
+import com.hanghae.gamemini.errorcode.UserStatusCode;
 import com.hanghae.gamemini.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,11 +34,12 @@ public class UserController {
      
      @PostMapping ("/signup")
      public ResponseEntity<PrivateResponseBody> signup(@RequestBody @Valid SignupRequestDto requestDto) {
-          PrivateResponseBody privateResponseBody = new PrivateResponseBody();
-          return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, userService.signUp(requestDto)), HttpStatus.OK);
+          userService.signUp(requestDto);
+          return new ResponseEntity<>(new PrivateResponseBody(UserStatusCode.USER_SIGNUP_SUCCESS), HttpStatus.OK);
      }
      
-     
+     // throw error
+     // jwt
      
      // AuthenticationPrincipal 사용예시
      /*
@@ -49,6 +51,5 @@ public class UserController {
      @PostMapping ("/login")
      public ResponseDto login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
           return userService.login(loginRequestDto, response);
-          
      }
 }

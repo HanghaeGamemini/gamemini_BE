@@ -17,16 +17,12 @@ public class PrivateResponseBody<T> {
      private T data; // null 일경우 json에 안보내지도록
      
      public PrivateResponseBody(StatusCode statusCode) {
+          this.success = statusCode.isSuccess();
           this.statusCode = statusCode.getStatusCode();
           this.statusMsg = statusCode.getStatusMsg();
-     }
-     public PrivateResponseBody(StatusCode statusCode, T data){
-          this.statusCode = statusCode.getStatusCode();
-          this.statusMsg = statusCode.getStatusMsg();
-          this.data = data;
      }
      
-     public PrivateResponseBody(boolean success, StatusCode statusCode, T data){
+     public PrivateResponseBody(StatusCode statusCode, T data){
           this.success = statusCode.isSuccess();
           this.statusCode = statusCode.getStatusCode();
           this.statusMsg = statusCode.getStatusMsg();
