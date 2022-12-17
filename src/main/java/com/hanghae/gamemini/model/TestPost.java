@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "testpost")
 @RequiredArgsConstructor
@@ -27,6 +28,9 @@ public class TestPost extends Timestamped{
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OrderBy("id asc")
+    List<Comment> comments;
     
 
     public TestPost(TestPostRequestDto requestDto, User user) {
