@@ -27,6 +27,12 @@ public class User {
      
      @Column(nullable = false)
      private String nickname;
+
+
+
+
+
+
      
      public User(SignupRequestDto requestDto, String password) {
           this.username = requestDto.getUsername();

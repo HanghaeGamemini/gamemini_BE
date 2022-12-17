@@ -10,6 +10,10 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum CommonStatusCode implements StatusCode {
      OK(true,"정상", HttpStatus.OK.value()),
+
+     POST_LIKE(true, "좋아요", HttpStatus.OK.value()),
+     POST_LIKE_CANCEL(true, "좋아요취소", HttpStatus.OK.value()),
+
      INVALID_PARAMETER("Invalid parameter included",HttpStatus.BAD_REQUEST.value()),
      INTERNAL_SERVER_ERROR("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR.value()),
      NO_ARTICLE("게시글이 존재하지 않습니다", HttpStatus.NOT_FOUND.value()),

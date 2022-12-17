@@ -32,9 +32,8 @@ public class UserController {
      
      @PostMapping ("/signup")
      public ResponseEntity<PrivateResponseBody> signup(@RequestBody @Valid SignupRequestDto requestDto) {
-          PrivateResponseBody privateResponseBody = new PrivateResponseBody();
           userService.signUp(requestDto);
-          return new ResponseEntity<>(new PrivateResponseBody(UserStatusCode.SIGNUP_OK), HttpStatus.OK);
+          return new ResponseEntity<>(new PrivateResponseBody(UserStatusCode.USER_SIGNUP_SUCCESS), HttpStatus.OK);
      }
      
      
@@ -49,6 +48,6 @@ public class UserController {
      @PostMapping ("/login")
      public ResponseEntity<PrivateResponseBody> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
           userService.login(loginRequestDto, response);
-          return new ResponseEntity<>(new PrivateResponseBody(UserStatusCode.LOGIN_OK), HttpStatus.OK);
+          return new ResponseEntity<>(new PrivateResponseBody(UserStatusCode.USER_LOGIN_SUCCESS), HttpStatus.OK);
      }
 }

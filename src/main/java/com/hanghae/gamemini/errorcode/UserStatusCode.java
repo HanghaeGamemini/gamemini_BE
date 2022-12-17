@@ -1,16 +1,19 @@
 package com.hanghae.gamemini.errorcode;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public enum UserStatusCode implements StatusCode {
 
-     SIGNUP_OK("회원가입 성공 .", HttpStatus.OK.value()),
+     NOT_FOUND_AUTHORIZATION_IN_SECURITY_CONTEXT("Security Context에 인증 정보가 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR.value()),
+     USER_SIGNUP_SUCCESS(true, "회원가입 성공", HttpStatus.OK.value()),
 
-     LOGIN_OK("로그인 성공 .", HttpStatus.OK.value()),
+     USER_LOGIN_SUCCESS(true, "로그인 성공", HttpStatus.OK.value()),
 
      ONLY_FOR_ADMIN("관리자만 가능합니다.", HttpStatus.BAD_REQUEST.value()),
      WRONG_USERNAME_PATTERN("유저명은 최소 4자 이상, 10자 이하이며 알파벳 소문자(a~z), 숫자(0~9)로 구성되어야 합니다.", HttpStatus.BAD_REQUEST.value()),
@@ -19,10 +22,11 @@ public enum UserStatusCode implements StatusCode {
      NO_USER("회원을 찾을 수 없습니다.",HttpStatus.NOT_FOUND.value()),
      WRONG_ADMIN_TOKEN("관리자 암호가 틀려 등록이 불가능합니다.", HttpStatus.BAD_REQUEST.value()),
      OVERLAPPED_USERNAME("중복된 username 입니다.", HttpStatus.BAD_REQUEST.value()),
+     PASSWORD_CHECK("입력된 비밀번호가 다릅니다.", HttpStatus.BAD_REQUEST.value()),
      임시이넘객체("임시객체입니다", HttpStatus.BAD_REQUEST.value()),
      INVALID_TOKEN("토큰이 유효하지 않습니다.", HttpStatus.BAD_REQUEST.value());
-     
-     private final boolean success = false;
+
+     private boolean success = false;
      private final String statusMsg;
      private final int statusCode;
 }

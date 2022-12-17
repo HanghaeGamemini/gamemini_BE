@@ -10,6 +10,7 @@ public class ResponseDto {
     private int statusCode;
     private boolean success;
 
+
     public ResponseDto(String statusMsg, int statusCode) {
         this.statusMsg = statusMsg;
         this.statusCode = statusCode;
