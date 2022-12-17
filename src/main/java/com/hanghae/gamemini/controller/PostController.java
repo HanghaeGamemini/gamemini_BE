@@ -38,6 +38,11 @@ public class PostController {
         PrivateResponseBody privateResponseBody = new PrivateResponseBody();
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.createPost(postRequestDto,userDetails.getUser())), HttpStatus.OK);
     }
+    @PutMapping("/post2")
+    public ResponseEntity<PrivateResponseBody> createPost2(@RequestBody PostRequestDto postRequestDto){
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.createPost2(postRequestDto)), HttpStatus.OK);
+    }
+    
 
     //게시글 수정
     @PutMapping("/post/{id}")

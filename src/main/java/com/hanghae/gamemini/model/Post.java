@@ -1,11 +1,13 @@
 package com.hanghae.gamemini.model;
 
 import com.hanghae.gamemini.dto.PostRequestDto;
+import io.swagger.annotations.Api;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Api(tags="게시글 컨트롤러")
 @NoArgsConstructor
 @Entity
 @Getter

@@ -8,6 +8,7 @@ import com.hanghae.gamemini.dto.PostRequestDto;
 import com.hanghae.gamemini.model.Post;
 import com.hanghae.gamemini.repository.PostRepository;
 
+import com.hanghae.gamemini.util.SecurityUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,6 +68,10 @@ public class PostService {
                 return CommonStatusCode.OK.getStatusMsg();
 
         }
+    
+    public Object createPost2(PostRequestDto postRequestDto) {
+        User user = SecurityUtil.getCurrentUser();
+    }
 }
 
 
