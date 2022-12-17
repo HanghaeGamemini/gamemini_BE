@@ -121,7 +121,8 @@ public class PostService {
           try {
                file.transferTo(savePath); // 지정 경로에 파일저장
           }catch (IOException e){
-               log.info("🛑" + e.getMessage());
+               log.info("🛑" );
+               e.printStackTrace();
                throw new RestApiException(CommonStatusCode.FILE_SAVE_FAIL);
           }
           log.info("파일저장 완료");
