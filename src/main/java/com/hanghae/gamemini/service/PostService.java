@@ -81,7 +81,6 @@ public class PostService {
      
      @Transactional
      public String deletePost(Long id, User user) {
-          
           Post post = postRepository.findById(id).orElseThrow(
                () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
@@ -89,7 +88,6 @@ public class PostService {
                postRepository.deleteById(id);
           }
           return CommonStatusCode.OK.getStatusMsg();
-          
      }
      
      public void createPost2(PostRequestDto postRequestDto, MultipartFile file, String realPath){
@@ -101,7 +99,6 @@ public class PostService {
           //"마지막으로온 "/"부분으로부터 +1 해준 부분부터 출력하겠습니다." 라는 뜻입니다.따라서 bootEx가 됩니다.
           String savedImagePath = uploadFile(file, realPath);
 //          String imgPath = s3Uploader.upload(file,"images");
-     
      }
      
      public String uploadFile(MultipartFile file, String realPath){
