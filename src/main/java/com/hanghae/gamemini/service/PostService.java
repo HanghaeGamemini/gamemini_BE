@@ -8,6 +8,7 @@ import com.hanghae.gamemini.exception.RestApiException;
 import com.hanghae.gamemini.model.Post;
 import com.hanghae.gamemini.model.User;
 import com.hanghae.gamemini.repository.PostRepository;
+import com.hanghae.gamemini.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,11 +58,11 @@ public class PostService {
      
      //게시글 작성
      @Transactional
-     public String createPost(PostRequestDto postRequestDto, User user) {
-          Post post = new Post(postRequestDto, user);
+     public String createPost(PostRequestDto postRequestDto) {
+          User user = SecurityUtil.getCurrentUser();
+          Post post = new Post(postRequestDto, user.getUsername());
           postRepository.save(post);
           return CommonStatusCode.OK.getStatusMsg();
-          
      }
      
      //게시글 수정
@@ -69,7 +70,7 @@ public class PostService {
           Post post = postRepository.findById(id).orElseThrow(
                () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
-          if (post.getUser().getUsername().equals(user.getUsername())) {
+          if (post.getUsername().equals(user.getUsername())) {
                post.update(postRequestDto);
           }
           return CommonStatusCode.OK.getStatusMsg();
@@ -81,7 +82,7 @@ public class PostService {
           Post post = postRepository.findById(id).orElseThrow(
                () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
-          if (post.getUser().getUsername().equals(user.getUsername())) {
+          if (post.getUsername().equals(user.getUsername())) {
                postRepository.deleteById(id);
           }
           return CommonStatusCode.OK.getStatusMsg();

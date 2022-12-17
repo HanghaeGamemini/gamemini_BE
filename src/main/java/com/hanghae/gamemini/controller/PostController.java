@@ -41,11 +41,12 @@ public class PostController {
     public  ResponseEntity<PrivateResponseBody> detailPost(@PathVariable Long id){
         return postService.detailPost(id);
     }
+    
     //게시글 작성
     @PutMapping("/post")
-    public ResponseEntity<PrivateResponseBody> createPost(@RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<PrivateResponseBody> createPost(@RequestBody PostRequestDto postRequestDto){
         PrivateResponseBody privateResponseBody = new PrivateResponseBody();
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.createPost(postRequestDto,userDetails.getUser())), HttpStatus.OK);
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.createPost(postRequestDto)), HttpStatus.OK);
     }
     
     // file upload 적용중

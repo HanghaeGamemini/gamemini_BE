@@ -27,27 +27,22 @@ public class Post extends Timestamped {
     private String imgUrl;
 
     @Column
-    private boolean isLike = true;
+    private boolean isLike = false;
 
     @Column
     private int likes;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User user;
+    
+    @Column
+    private String username;
 
     @Column
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int commentNum;
 
-
-
-
-    public Post(PostRequestDto postRequestDto, User user) {
+    public Post(PostRequestDto postRequestDto, String username) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
-        this.user = user;
-
+        this.username = username;
     }
 
 
