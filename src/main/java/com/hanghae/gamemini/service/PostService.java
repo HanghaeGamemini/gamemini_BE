@@ -115,7 +115,7 @@ public class PostService {
           String fileUUName = createFileName(file.getOriginalFilename()); // 중복되지않는 새 파일이름 생성
           log.info("✅ originalFileName : {}, fileUUName : {}" ,originalFileName, fileUUName);
           // s3 적용전 버전
-          String saveName = uploadPath + File.separator + fileUUName; // 저장할 파일경로.파일이름 // File.separator +
+          String saveName = uploadPath + fileUUName; // 저장할 파일경로.파일이름 // File.separator +
           Path savePath = Paths.get(saveName); // 파일의 저장경로(경로 정의)
           log.info("✅ saveName : {}, savePath : {}", saveName, savePath);
           try {
