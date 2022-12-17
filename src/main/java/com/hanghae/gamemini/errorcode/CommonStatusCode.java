@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public enum CommonStatusCode implements StatusCode {
+     FILE_SAVE_FAIL("파일 저장에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR.value()),
      OK(true,"정상", HttpStatus.OK.value()),
+     WRONG_IMAGE_FORMAT("지원하지 않는 파일 형식입니다.", HttpStatus.BAD_REQUEST.value()),
      INVALID_PARAMETER("Invalid parameter included",HttpStatus.BAD_REQUEST.value()),
      INTERNAL_SERVER_ERROR("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR.value()),
      NO_ARTICLE("게시글이 존재하지 않습니다", HttpStatus.NOT_FOUND.value()),

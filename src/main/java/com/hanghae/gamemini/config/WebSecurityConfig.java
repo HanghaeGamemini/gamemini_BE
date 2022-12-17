@@ -51,7 +51,8 @@ public class WebSecurityConfig {
                 // 토큰검증 필요없는 페이지 설정
                 .antMatchers(HttpMethod.POST, "/api/user/**").permitAll()
                 .antMatchers( "/api/doc").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/post*/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/post/**").permitAll()
+                .antMatchers( "/api/post*/**").permitAll() // 임시
                 .antMatchers(HttpMethod.GET,"/api/user/login-page").permitAll()
                 .anyRequest().authenticated()
                 //서버는 JWT 토큰을 검증하고 토큰의 정보를 사용하여 사용자의 인증을 진행해주는 Spring Security 에 등록한 JwtAuthFilter 를 사용하여 인증/인가를 처리한다.

@@ -7,18 +7,27 @@ import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.security.UserDetailsImpl;
 import com.hanghae.gamemini.service.PostService;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 
-@NoArgsConstructor
+@Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class PostController {
 
-    private PostService postService;
+    private final PostService postService;
+    
 
     //전체조회
     @GetMapping("/post")
@@ -38,9 +47,15 @@ public class PostController {
         PrivateResponseBody privateResponseBody = new PrivateResponseBody();
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.createPost(postRequestDto,userDetails.getUser())), HttpStatus.OK);
     }
-    @PutMapping("/post2")
-    public ResponseEntity<PrivateResponseBody> createPost2(@RequestBody PostRequestDto postRequestDto){
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.createPost2(postRequestDto)), HttpStatus.OK);
+    
+    // file upload 적용중
+    @PostMapping("/post2")
+    public ResponseEntity<PrivateResponseBody> createPost2(
+         @RequestPart PostRequestDto postRequestDto,
+         @RequestPart(value="file", required = false) MultipartFile multipartFile, HttpServletRequest request){
+        String realPath = request.getSession().getServletContext().getRealPath("/");
+        postService.createPost2(postRequestDto , multipartFile, realPath);
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK), HttpStatus.OK);
     }
     
 
