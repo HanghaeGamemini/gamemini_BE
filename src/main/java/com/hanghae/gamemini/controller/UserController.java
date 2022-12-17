@@ -1,5 +1,6 @@
 package com.hanghae.gamemini.controller;
 
+import com.hanghae.gamemini.dto.LoginRequestDto;
 import com.hanghae.gamemini.dto.PrivateResponseBody;
 import com.hanghae.gamemini.dto.SignupRequestDto;
 import com.hanghae.gamemini.errorcode.UserStatusCode;
@@ -44,8 +45,18 @@ public class UserController {
       */
 
 
+
 //     @PostMapping ("/login")
 //     public ResponseDto login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
 //          return userService.login(loginRequestDto, response);
 //     }
+
+     
+     
+     @PostMapping ("/login")
+     public ResponseEntity<PrivateResponseBody> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+          userService.login(loginRequestDto, response);
+          return new ResponseEntity<>(new PrivateResponseBody(UserStatusCode.USER_LOGIN_SUCCESS), HttpStatus.OK);
+     }
+
 }

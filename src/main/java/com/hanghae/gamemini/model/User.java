@@ -28,9 +28,9 @@ public class User {
      @Column(nullable = false)
      private String nickname;
      
-     public User(SignupRequestDto requestDto) {
+     public User(SignupRequestDto requestDto, String password) {
           this.username = requestDto.getUsername();
-          this.password = requestDto.getPassword();
+          this.password = password;
           this.nickname = requestDto.getNickname();
      }
 }

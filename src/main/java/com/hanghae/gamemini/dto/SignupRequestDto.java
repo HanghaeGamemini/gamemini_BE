@@ -11,10 +11,10 @@ import javax.validation.constraints.Size;
 public class SignupRequestDto {
 
     @Size(min = 5, max = 10)
-    @Pattern(regexp = "^(?=.*?[0-9])(?=.*?[a-z])")
+    @Pattern (regexp="^(?=.*?[0-9])(?=.*?[a-z]).{4,10}$")
     private String username;
 
-    //@Pattern (regexp="^(?=.*?[0-9])(?=.*?[a-z])(?=.*?[#?!@$%.^&*-])(?=\\S+$).{8,15}$")
+
     @Size(min = 8, max = 15)
     @Pattern (regexp="^.(?=.*\\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$")
     private String password;
