@@ -21,7 +21,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public ResponseEntity<?> getPost() {
         List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
-
+        return null;
     }
 
     //글 상세 조회
@@ -30,7 +30,8 @@ public class PostService {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
         );
-        return new PrivateResponseBody(post);
+//        return new PrivateResponseBody(post);
+        return null;
     }
 
     //게시글 작성

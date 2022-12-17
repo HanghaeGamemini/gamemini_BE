@@ -23,7 +23,8 @@ public class PostController {
     //전체조회
     @GetMapping("/post")
     public  ResponseEntity<PrivateResponseBody> getPost(){
-        return postService.getPsot();
+//        return postService.getPost();
+        return null;
     }
 
     //선택조회
