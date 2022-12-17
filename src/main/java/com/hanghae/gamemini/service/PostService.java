@@ -1,15 +1,13 @@
 package com.hanghae.gamemini.service;
 
 import com.hanghae.gamemini.S3.S3Uploader;
+import com.hanghae.gamemini.dto.PostRequestDto;
 import com.hanghae.gamemini.dto.PrivateResponseBody;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
-import com.hanghae.gamemini.model.User;
-import com.hanghae.gamemini.dto.PostRequestDto;
 import com.hanghae.gamemini.model.Post;
+import com.hanghae.gamemini.model.User;
 import com.hanghae.gamemini.repository.PostRepository;
-
-import com.hanghae.gamemini.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
