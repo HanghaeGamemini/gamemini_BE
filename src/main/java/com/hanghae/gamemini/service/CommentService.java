@@ -27,19 +27,25 @@ public class CommentService {
     @Transactional
     public ResponseEntity<?> postComment(Long postId, CommentRequestDto requestDto) {
         TestPost post = postRepository.findById(postId).orElseThrow(
-                () ->  new RestApiException(CommonStatusCode.NO_ARTICLE)
+                () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
         );
-        Comment save = new Comment(SecurityUtil.getCurrentUser() ,post, requestDto);
+        Comment save = new Comment(SecurityUtil.getCurrentUser(), post, requestDto);
         commentRepository.saveAndFlush(save);
 
         return ResponseEntity.ok(new CommentResponseDto(save));
     }
 
     public ResponseEntity<PrivateResponseBody> deleteComment(Long commentId) {
-        commentRepository.findById(commentId).orElseThrow(
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new RestApiException(CommonStatusCode.NO_COMMENT)
         );
-        commentRepository.deleteById(commentId);
+        boolean usernameCheck = comment.getUser().getUsername().equals(SecurityUtil.getCurrentUser().getUsername());
+        if (usernameCheck) {
+            commentRepository.deleteById(commentId);
+        } else {
+            return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.INVALID_USER), HttpStatus.BAD_REQUEST);
+        }
+//        commentRepository.deleteById(commentId);
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.DELETE_COMMENT), HttpStatus.OK);
     }
 }
