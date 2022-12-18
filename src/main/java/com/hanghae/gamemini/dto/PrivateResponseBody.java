@@ -19,7 +19,6 @@ public class PrivateResponseBody<T> {
           this.success = statusCode.isSuccess();
           this.statusCode = statusCode.getStatusCode();
           this.statusMsg = statusCode.getStatusMsg();
-          this.success = true;
      }
      
      public PrivateResponseBody(StatusCode statusCode, T data){
@@ -28,6 +27,5 @@ public class PrivateResponseBody<T> {
           this.statusMsg = statusCode.getStatusMsg();
           this.data = data;
      }
-
 
 }

@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,14 +16,40 @@ public class TestPostResponseDto {
     private String title;
     private String username;
     private String content;
+
+    private List<CommentResponseDto> comments;
     private LocalDateTime CreatedAt;
     private LocalDateTime ModifiedAt;
+    private int likes;
 
-    public TestPostResponseDto(TestPost post) {
+    private boolean isLike;
+
+
+
+//    public TestPostResponseDto(TestPost post) {
+//        this.title = post.getTitle();
+//        this.username = post.getUser().getUsername();
+//        this.content = post.getContent();
+//        this.CreatedAt = post.getCreatedAt();
+//        this.ModifiedAt = post.getModifiedAt();
+//        this.likes = post.getLikes();
+//        this.isLike = post.getLike().isLike();
+//    }
+
+    public TestPostResponseDto(TestPost post, boolean isLike) {
         this.title = post.getTitle();
         this.username = post.getUser().getUsername();
         this.content = post.getContent();
+        this.comments = post.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
         this.CreatedAt = post.getCreatedAt();
         this.ModifiedAt = post.getModifiedAt();
+        this.likes = post.getLikes();
+        this.isLike = isLike;
     }
+
+
+
+
 }
+
+
