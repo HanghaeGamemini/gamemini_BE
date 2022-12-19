@@ -1,24 +1,24 @@
 package com.hanghae.gamemini.service;
 
+import com.hanghae.gamemini.dto.PostRequestDto;
 import com.hanghae.gamemini.dto.PostResponseDto;
-import com.hanghae.gamemini.dto.PrivateResponseBody;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
-import com.hanghae.gamemini.model.User;
-import com.hanghae.gamemini.dto.PostRequestDto;
 import com.hanghae.gamemini.model.Post;
+import com.hanghae.gamemini.model.User;
 import com.hanghae.gamemini.repository.PostRepository;
-
-import org.apache.catalina.security.SecurityUtil;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
+@Service
 public class PostService {
 
-     private PostRepository postRepository;
+     private final PostRepository postRepository;
 
      //전체글 조회
      @Transactional(readOnly = true)
@@ -29,7 +29,6 @@ public class PostService {
 
           for (Post post : posts) {
                PostResponseDto postResponseDto = new PostResponseDto(post);
-
                postResponseDtos.add(postResponseDto);
           }
           return postResponseDtos;
@@ -45,9 +44,7 @@ public class PostService {
           );
           return new PostResponseDto(post);
      }
-
      //게시글 작성
-
      @Transactional
      public void createPost(PostRequestDto postRequestDto, User user) {
           postRepository.saveAndFlush(new Post(postRequestDto, user));
@@ -60,6 +57,8 @@ public class PostService {
           );
           if(post.getUser().getUsername().equals(user.getUsername())){
                post.update(postRequestDto);
+
+
           }
           return CommonStatusCode.OK.getStatusMsg();
      }

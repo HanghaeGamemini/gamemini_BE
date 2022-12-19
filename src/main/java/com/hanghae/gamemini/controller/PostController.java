@@ -7,8 +7,7 @@ import com.hanghae.gamemini.dto.PrivateResponseBody;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.security.UserDetailsImpl;
 import com.hanghae.gamemini.service.PostService;
-import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.ModCheck;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-@NoArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
 public class PostController {
 
-    private PostService postService;
+    private final PostService postService;
 
     //전체조회
     @GetMapping("/post")
