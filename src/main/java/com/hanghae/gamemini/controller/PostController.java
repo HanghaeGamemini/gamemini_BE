@@ -41,15 +41,21 @@ public class PostController {
 
     //게시글 작성
     @PostMapping("/post")
-    public ResponseEntity<PrivateResponseBody> createPost(@RequestBody PostRequestDto postRequestDto){
-        postService.createPost(postRequestDto);
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK), HttpStatus.OK);
+    public ResponseEntity<PrivateResponseBody> createPost(
+         @RequestPart PostRequestDto requestDto,
+         @RequestPart(value="file", required = false) MultipartFile multipartFile,
+         HttpServletRequest request){
+        String realPath = request.getSession().getServletContext().getRealPath("/");
+        postService.createPost(requestDto, multipartFile);
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.CREATE_POST), HttpStatus.OK);
     }
     
+    // 서버에 이미지 저장ver
     @PostMapping("/post2")
     public ResponseEntity<PrivateResponseBody> createPost2(
          @RequestPart PostRequestDto postRequestDto,
-         @RequestPart(value="file", required = false) MultipartFile multipartFile, HttpServletRequest request){
+         @RequestPart(value="file", required = false) MultipartFile multipartFile,
+         HttpServletRequest request){
         String realPath = request.getSession().getServletContext().getRealPath("/");
         log.info("realPath : {}", realPath);
         postService.createPost2(postRequestDto , multipartFile, realPath);

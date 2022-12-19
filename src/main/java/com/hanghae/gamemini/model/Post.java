@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Api(tags="게시글 컨트롤러")
@@ -35,12 +36,21 @@ public class Post extends Timestamped {
     
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("id asc")
-    List<Comment> comments;
-
+    List<Comment> comments = new ArrayList<>();
+    
+    // img 없는경우
     public Post(PostRequestDto postRequestDto, String username) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
         this.username = username;
+    }
+
+    // img 있는경우
+    public Post(PostRequestDto postRequestDto, String username, String imgUrl) {
+        this.title = postRequestDto.getTitle();
+        this.content = postRequestDto.getContent();
+        this.username = username;
+        this.imgUrl = imgUrl;
     }
 
 

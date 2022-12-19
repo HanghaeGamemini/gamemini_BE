@@ -55,6 +55,7 @@ public class PostService {
      //글 선택 조회
      @Transactional(readOnly = true)
      public PostResponseDto.DetailResponse detailPost(Long id){
+          // 포스트 유무 확인
           Post post = postRepository.findById(id).orElseThrow(
                   () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
@@ -66,9 +67,10 @@ public class PostService {
      }
      //게시글 작성
      @Transactional
-     public void createPost(PostRequestDto postRequestDto) {
+     public void createPost(PostRequestDto postRequestDto, MultipartFile file) {
           User user = SecurityUtil.getCurrentUser();
-          postRepository.saveAndFlush(new Post(postRequestDto, user.getUsername()));
+          String imgUrl = "abc";
+          postRepository.saveAndFlush(new Post(postRequestDto, user.getUsername(), imgUrl));
      }
 
      //게시글 수정
