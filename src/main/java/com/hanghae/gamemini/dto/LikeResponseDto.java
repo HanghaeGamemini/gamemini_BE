@@ -5,7 +5,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class TestPostRequestDto {
-    private String title;
-    private String content;
+public class LikeResponseDto {
+
+    private boolean isLike;
+
+    private Long userId;
+
+    private Long postId;
+
 }

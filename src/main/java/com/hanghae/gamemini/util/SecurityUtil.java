@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @NoArgsConstructor
 public class SecurityUtil {
+
      
      public static User getCurrentUser() {
           final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -27,3 +28,4 @@ public class SecurityUtil {
           }
      }
 }
+

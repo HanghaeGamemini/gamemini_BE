@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Api(tags="게시글 컨트롤러")
 @NoArgsConstructor
@@ -31,18 +32,27 @@ public class Post extends Timestamped {
 
     @Column
     private int likes;
-    
+
     @Column
-    private String username;
+    private String nickName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int commentNum;
 
-    public Post(PostRequestDto postRequestDto, String username) {
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OrderBy("id asc")
+    List<Comment> comments;
+
+
+    public Post(PostRequestDto postRequestDto, User user) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
-        this.username = username;
+        this.user = user;
     }
 
 
@@ -50,5 +60,14 @@ public class Post extends Timestamped {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
     }
+
+    public void like() {
+        this.likes += 1;
+    }
+
+    public void likeCancel() {
+        this.likes -= 1;
+    }
+
 
 }

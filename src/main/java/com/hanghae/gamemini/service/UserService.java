@@ -32,7 +32,12 @@ public class UserService {
         if (found.isPresent()){
             throw new RestApiException(UserStatusCode.OVERLAPPED_USERNAME);
         }
-
+        String pw = requestDto.getPassword();
+        String pwdCheck = requestDto.getPasswordCheck();
+        //비밀번호체크
+        if(!pw.equals(pwdCheck)){
+            throw new RestApiException(UserStatusCode.PASSWORD_CHECK);
+        }
 
         String password = passwordEncoder.encode(requestDto.getPassword());
 

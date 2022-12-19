@@ -54,6 +54,7 @@ public class UserController {
      
      @PostMapping ("/login")
      public ResponseEntity<PrivateResponseBody> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+          System.out.println("longcontroller");
           userService.login(loginRequestDto, response);
           return new ResponseEntity<>(new PrivateResponseBody(UserStatusCode.USER_LOGIN_SUCCESS), HttpStatus.OK);
      }
