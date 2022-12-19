@@ -39,11 +39,12 @@ public class LikeService {
         } else {
             if(like.isLike()){//좋아요눌려있을때취소
                 post.likeCancel();
-                like.falseIsLike();
+                likeRepository.deleteById(like.getId());
                 return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.POST_LIKE_CANCEL), HttpStatus.OK);
             } else{//안눌려있을때다시좋아요
                 post.like();
-                like.trueIsLike();
+                Likes likes = new Likes(user, post);
+                likeRepository.save(likes);
                 return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.POST_LIKE), HttpStatus.OK);
             }
         }

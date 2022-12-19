@@ -58,6 +58,7 @@ public class UserService {
         if(!passwordEncoder.matches(password, user.getPassword())){
             throw  new RestApiException(UserStatusCode.WRONG_PASSWORD);
         }
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
     }
 
 

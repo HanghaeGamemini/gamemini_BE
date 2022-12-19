@@ -8,6 +8,7 @@ import com.hanghae.gamemini.errorcode.UserStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
 import com.hanghae.gamemini.model.Post;
 import com.hanghae.gamemini.model.User;
+import com.hanghae.gamemini.repository.LikeRepository;
 import com.hanghae.gamemini.repository.PostRepository;
 import com.hanghae.gamemini.repository.UserRepository;
 import com.hanghae.gamemini.util.SecurityUtil;
@@ -42,13 +43,18 @@ public class PostService {
 
      private final PostRepository postRepository;
 
+     private final LikeRepository likeRepository;
+
      //전체글 조회
      @Transactional(readOnly = true)
      public List<PostResponseDto.AllPostResponseDto> getPost(int page, int size) {
           Pageable pageable = PageRequest.of(page, size); // page : zero-based page index, size : the size of the page to be returned,
           // pageable 적용, 생성일 기준 내림차순하여 findAll
           return postRepository.findAllByOrderByCreatedAtDesc(pageable).stream()
-               .map(post -> new PostResponseDto.AllPostResponseDto(post, true, "temp")) // todo isLike 수정필요
+               .map(post -> {
+                    boolean isLike = likeRepository.existsByUserAndPost(SecurityUtil.getCurrentUser(), post);
+                    return new PostResponseDto.AllPostResponseDto(post, isLike, "temp");
+               }) // todo isLike 수정필요
                .collect(Collectors.toList());
      }
 
@@ -62,7 +68,8 @@ public class PostService {
           User user = userRepository.findByUsername(post.getUsername()).orElseThrow(
                () -> new RestApiException(UserStatusCode.NO_USER)
           );
-          return new PostResponseDto.DetailResponse(post, true, user);
+          boolean isLike = likeRepository.existsByUserAndPost(SecurityUtil.getCurrentUser(), post);
+          return new PostResponseDto.DetailResponse(post, isLike, user);
      }
      //게시글 작성
      @Transactional

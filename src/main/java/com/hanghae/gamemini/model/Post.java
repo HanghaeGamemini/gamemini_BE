@@ -29,7 +29,7 @@ public class Post extends Timestamped {
 
     @Column
     private int likes;
-    
+
     @Column
     private String username;
     

@@ -36,7 +36,7 @@ public class PostResponseDto {
             this.imgUrl = post.getImgUrl();
             this.nickName = nickName;
             this.isLike = isLike;
-//            this.likes = post.getLikes(); // 수정필요
+            this.likes = post.getLikes(); // 수정필요
             this.commentsNum = post.getComments().size();  // todo n+1 없도록 수정필요 groupby
             this.CreatedAt = post.getCreatedAt();
             this.ModifiedAt = post.getModifiedAt();
@@ -69,7 +69,7 @@ public class PostResponseDto {
             //Todo N+1 해결하기
             this.commentList = post.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
             this.isLike = isLike;
-//            this.likes = post.getLikes(); // 수정필요
+            this.likes = post.getLikes(); // 수정필요
             this.CreatedAt = post.getCreatedAt();
             this.ModifiedAt = post.getModifiedAt();
         }
