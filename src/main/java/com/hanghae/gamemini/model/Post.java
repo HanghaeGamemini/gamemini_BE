@@ -28,7 +28,7 @@ public class Post extends Timestamped {
     private String imgUrl;
 
     @Column
-    private int likes;
+    private int likes;  // todo 제거필요
     
     @Column
     private String username;

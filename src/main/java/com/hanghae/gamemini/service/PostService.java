@@ -106,7 +106,6 @@ public class PostService {
           //"마지막으로온 "/"부분으로부터 +1 해준 부분부터 출력하겠습니다." 라는 뜻입니다.따라서 bootEx가 됩니다.
           String savedImagePath = uploadFile(file, realPath);
 //          String imgPath = s3Uploader.upload(file,"images");
-     
      }
      
      public String uploadFile(MultipartFile file, String realPath){
