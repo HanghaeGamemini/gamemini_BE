@@ -16,45 +16,47 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-@RequiredArgsConstructor
+
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
 
     //전체조회
     @GetMapping("/post")
-    public ResponseEntity<?> getPost(){
+    public ResponseEntity<?> getPost() {
         List<PostResponseDto> postResponseDtos = postService.getPsot();
-        ResponseEntity<List<PostResponseDto>>listResponseEntity = new ResponseEntity<>(postResponseDtos, HttpStatus.OK);
+        ResponseEntity<List<PostResponseDto>> listResponseEntity = new ResponseEntity<>(postResponseDtos, HttpStatus.OK);
         return listResponseEntity;
     }
 
     //선택조회
     @GetMapping("post/{id}")
-    public  ResponseEntity<PrivateResponseBody> detailPost(@PathVariable Long id){
+    public ResponseEntity<PrivateResponseBody> detailPost(@PathVariable Long id) {
         postService.detailPost(id);
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK),HttpStatus.OK);
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK), HttpStatus.OK);
     }
+
     //게시글 작성
     @PostMapping("/post")
-    public ResponseEntity<PrivateResponseBody> post(@RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<PrivateResponseBody> post(@RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         postService.createPost(postRequestDto, userDetails.getUser());
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK), HttpStatus.OK);
     }
 
     //게시글 수정
     @PutMapping("/post/{id}")
-    public ResponseEntity<PrivateResponseBody> updatePost(@PathVariable Long id , @RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<PrivateResponseBody> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         PrivateResponseBody privateResponseBody = new PrivateResponseBody();
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK,postService.updatePost(id, postRequestDto,userDetails.getUser())),HttpStatus.OK);
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.updatePost(id, postRequestDto, userDetails.getUser())), HttpStatus.OK);
     }
 
     //게시글 삭제
     @DeleteMapping("/post/{id}")
-    public ResponseEntity<PrivateResponseBody> deletePost(@PathVariable Long id,  @AuthenticationPrincipal UserDetailsImpl userDetails  ){
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK,postService.deletePost(id, userDetails.getUser())),HttpStatus.OK);
+    public ResponseEntity<PrivateResponseBody> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.deletePost(id, userDetails.getUser())), HttpStatus.OK);
 
     }
 }

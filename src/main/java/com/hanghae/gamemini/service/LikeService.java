@@ -8,7 +8,7 @@ import com.hanghae.gamemini.model.Post;
 import com.hanghae.gamemini.model.User;
 import com.hanghae.gamemini.repository.LikeRepository;
 import com.hanghae.gamemini.repository.PostRepository;
-import com.hanghae.gamemini.repository.PostRepository;
+import com.hanghae.gamemini.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,8 @@ public class LikeService {
     private final LikeRepository likeRepository;
 
     @Transactional
-    public ResponseEntity<PrivateResponseBody> PostLike(Long id, User user) {
+    public ResponseEntity<PrivateResponseBody> PostLike(Long id) {
+        User user = SecurityUtil.getCurrentUser();
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
         );
