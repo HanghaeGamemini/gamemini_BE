@@ -1,24 +1,23 @@
 package com.hanghae.gamemini.service;
 
+import com.hanghae.gamemini.dto.PostRequestDto;
 import com.hanghae.gamemini.dto.PostResponseDto;
-import com.hanghae.gamemini.dto.PrivateResponseBody;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
-import com.hanghae.gamemini.model.User;
-import com.hanghae.gamemini.dto.PostRequestDto;
 import com.hanghae.gamemini.model.Post;
+import com.hanghae.gamemini.model.User;
 import com.hanghae.gamemini.repository.PostRepository;
-
-import org.apache.catalina.security.SecurityUtil;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
+@RequiredArgsConstructor
 public class PostService {
 
-     private PostRepository postRepository;
+     private final PostRepository postRepository;
 
      //전체글 조회
      @Transactional(readOnly = true)

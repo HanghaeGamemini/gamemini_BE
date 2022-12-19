@@ -28,21 +28,21 @@ public class UserService {
 
     @Transactional
     public void signUp(SignupRequestDto requestDto) {
-        Optional<User> found = userRepository.findByUsername(requestDto.getUsername());
-        if (found.isPresent()){
-            throw new RestApiException(UserStatusCode.OVERLAPPED_USERNAME);
-        }
         String pw = requestDto.getPassword();
         String pwdCheck = requestDto.getPasswordCheck();
         //비밀번호체크
         if(!pw.equals(pwdCheck)){
             throw new RestApiException(UserStatusCode.PASSWORD_CHECK);
         }
+        Optional<User> found = userRepository.findByUsername(requestDto.getUsername());
+        if (found.isPresent()){
+            throw new RestApiException(UserStatusCode.OVERLAPPED_USERNAME);
+        }
+
 
         String password = passwordEncoder.encode(requestDto.getPassword());
 
         userRepository.save(new User(requestDto, password));
-
     }
 
     @Transactional
@@ -52,15 +52,13 @@ public class UserService {
 
         // 사용자 확인
         User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
+                () -> new RestApiException(UserStatusCode.NO_USER)
         );
         // 비밀번호 확인
         if(!passwordEncoder.matches(password, user.getPassword())){
-            throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw  new RestApiException(UserStatusCode.WRONG_PASSWORD);
         }
-
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getNickname()));
-
     }
 
 
