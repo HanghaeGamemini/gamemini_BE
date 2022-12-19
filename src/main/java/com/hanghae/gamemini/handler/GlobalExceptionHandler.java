@@ -41,8 +41,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                     .build());
      }
      
-     
-     
      // IllegalArgumentException 에러 핸들링
      @ExceptionHandler(IllegalArgumentException.class)
      public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException e) {

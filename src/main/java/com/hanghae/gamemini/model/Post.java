@@ -28,31 +28,22 @@ public class Post extends Timestamped {
     private String imgUrl;
 
     @Column
-    private boolean isLike = false;
-
-    @Column
     private int likes;
 
     @Column
     private String nickName;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
+    
     @Column
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int commentNum;
-
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private String username;
+    
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("id asc")
     List<Comment> comments;
 
-
-    public Post(PostRequestDto postRequestDto, User user) {
+    public Post(PostRequestDto postRequestDto, String username) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
-        this.user = user;
+        this.username = username;
     }
 
 

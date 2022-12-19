@@ -18,7 +18,6 @@ public class CommentController {
 
     @PostMapping("/post/{postId}/comment")
     public ResponseEntity<PrivateResponseBody> postComment(@PathVariable Long postId, @RequestBody CommentRequestDto requestDto) {
-
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, commentService.postComment(postId, requestDto)), HttpStatus.OK);
     }
 

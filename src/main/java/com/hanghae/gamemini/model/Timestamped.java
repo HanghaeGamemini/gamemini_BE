@@ -2,6 +2,7 @@ package com.hanghae.gamemini.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -21,6 +22,9 @@ public class Timestamped {
 
     @LastModifiedDate
     private LocalDateTime modifiedAt;
+    
+//    @CreatedBy
+//    private String createdUsername;
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
