@@ -1,6 +1,7 @@
 package com.hanghae.gamemini.dto;
 
 import com.hanghae.gamemini.model.Post;
+import com.hanghae.gamemini.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,44 +29,51 @@ public class PostResponseDto {
         private LocalDateTime CreatedAt;
         private LocalDateTime ModifiedAt;
     
-        public AllPostResponseDto(Post post, boolean isLike) {
+        public AllPostResponseDto(Post post, boolean isLike, String nickName) {
             this.id = post.getId();
             this.title = post.getTitle();
             this.content = post.getContent();
             this.imgUrl = post.getImgUrl();
-            this.nickName = post.getNickName();
+            this.nickName = nickName;
             this.isLike = isLike;
-            this.likes = post.getLikes();
+//            this.likes = post.getLikes(); // 수정필요
             this.commentsNum = post.getComments().size();  // todo n+1 없도록 수정필요 groupby
             this.CreatedAt = post.getCreatedAt();
             this.ModifiedAt = post.getModifiedAt();
         }
     }
     
-    public PostResponseDto(Post post, boolean isLike) {
-        this.title = post.getTitle();
-        this.content = post.getContent();
-        this.comments = post.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
-        this.CreatedAt = post.getCreatedAt();
-        this.ModifiedAt = post.getModifiedAt();
-        this.likes = post.getLikes();
-        this.isLike = isLike;
+    @Getter
+    @NoArgsConstructor
+    public static class DetailResponse {
+    
+        private Long id;
+        private String profileUrl;
+        private String title;
+        private String content;
+        private String imgUrl;
+        private String nickName;
+        private List<CommentResponseDto> commentList;
+        private boolean isLike;
+        private int likes;
+        private LocalDateTime CreatedAt;
+        private LocalDateTime ModifiedAt;
+    
+        public DetailResponse(Post post, boolean isLike,User user) {
+            this.id = post.getId();
+            this.profileUrl = user.getProfileUrl();
+            this.title = post.getTitle();
+            this.content = post.getContent();
+            this.imgUrl = post.getImgUrl();
+            this.nickName = user.getNickname();
+            //Todo N+1 해결하기
+            this.commentList = post.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
+            this.isLike = isLike;
+//            this.likes = post.getLikes(); // 수정필요
+            this.CreatedAt = post.getCreatedAt();
+            this.ModifiedAt = post.getModifiedAt();
+        }
     }
-    private Long id;
-    private String title;
-    private String content;
-
-    private String nickName;
-    private String imgUrl;
-    private List<CommentResponseDto> comments;
-    private LocalDateTime CreatedAt;
-    private LocalDateTime ModifiedAt;
-    private int likes;
-
-    private boolean isLike;
-
-
-
 //    public TestPostResponseDto(TestPost post) {
 //        this.title = post.getTitle();
 //        this.username = post.getUser().getUsername();

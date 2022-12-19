@@ -4,10 +4,12 @@ import com.hanghae.gamemini.S3.S3Uploader;
 import com.hanghae.gamemini.dto.PostRequestDto;
 import com.hanghae.gamemini.dto.PostResponseDto;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
+import com.hanghae.gamemini.errorcode.UserStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
 import com.hanghae.gamemini.model.Post;
 import com.hanghae.gamemini.model.User;
 import com.hanghae.gamemini.repository.PostRepository;
+import com.hanghae.gamemini.repository.UserRepository;
 import com.hanghae.gamemini.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+     private final UserRepository userRepository;
      
      private final S3Uploader s3Uploader;
      
@@ -47,7 +50,7 @@ public class PostService {
           Pageable pageable = PageRequest.of(page, size); // page : zero-based page index, size : the size of the page to be returned,
           // pageable 적용, 생성일 기준 내림차순하여 findAll
           return postRepository.findAllByOrderByCreatedAtDesc(pageable).stream()
-               .map(post -> new PostResponseDto.AllPostResponseDto(post, true)) // todo isLike 수정필요
+               .map(post -> new PostResponseDto.AllPostResponseDto(post, true, "temp")) // todo isLike 수정필요
                .collect(Collectors.toList());
      }
 
@@ -55,11 +58,15 @@ public class PostService {
 
      //글 선택 조회
      @Transactional(readOnly = true)
-     public PostResponseDto detailPost(Long id){
+     public PostResponseDto.DetailResponse detailPost(Long id){
           Post post = postRepository.findById(id).orElseThrow(
                   () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
-          return new PostResponseDto(post);
+          // 해당 게시글을 작성한 user find
+          User user = userRepository.findByUsername(post.getUsername()).orElseThrow(
+               () -> new RestApiException(UserStatusCode.NO_USER)
+          );
+          return new PostResponseDto.DetailResponse(post, true, user);
      }
 
      //게시글 작성

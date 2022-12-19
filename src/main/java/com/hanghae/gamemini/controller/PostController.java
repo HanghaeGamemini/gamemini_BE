@@ -32,8 +32,7 @@ public class PostController {
          @RequestParam(value = "page", defaultValue = "1") int page,
          @RequestParam(value="size", defaultValue = "5") int size
     ){
-        List<PostResponseDto.AllPostResponseDto> postResponseDtos = postService.getPost(page-1, size);
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postResponseDtos), HttpStatus.OK);
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.getPost(page-1, size)), HttpStatus.OK);
     }
 
     //선택조회
@@ -43,8 +42,8 @@ public class PostController {
     }
     //게시글 작성
     @PostMapping("/post")
-    public ResponseEntity<PrivateResponseBody> createPost(@RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        postService.createPost(postRequestDto, userDetails.getUser());
+    public ResponseEntity<PrivateResponseBody> createPost(@RequestBody PostRequestDto postRequestDto){
+        postService.createPost(postRequestDto);
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK), HttpStatus.OK);
     }
     

@@ -29,15 +29,9 @@ public class User {
 
      @Column(nullable = false)
      private String nickname;
-
-     @OneToMany(mappedBy = "user")
-     private List<Post> posts = new ArrayList<>();
-
-
-
-
-
-
+     
+     @Column
+     private String profileUrl;
 
      public User(SignupRequestDto requestDto, String password) {
           this.username = requestDto.getUsername();

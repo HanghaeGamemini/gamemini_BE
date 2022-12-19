@@ -29,9 +29,6 @@ public class Post extends Timestamped {
 
     @Column
     private int likes;
-
-    @Column
-    private String nickName;
     
     @Column
     private String username;

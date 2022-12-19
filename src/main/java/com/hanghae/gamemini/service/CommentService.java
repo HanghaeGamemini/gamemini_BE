@@ -29,7 +29,7 @@ public class CommentService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
         );
-        Comment save = new Comment(SecurityUtil.getCurrentUser(), post, requestDto);
+        Comment save = new Comment(SecurityUtil.getCurrentUser().getUsername(), post, requestDto);
         commentRepository.saveAndFlush(save);
 
         return ResponseEntity.ok(new CommentResponseDto(save));
@@ -39,7 +39,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new RestApiException(CommonStatusCode.NO_COMMENT)
         );
-        boolean usernameCheck = comment.getUser().getUsername().equals(SecurityUtil.getCurrentUser().getUsername());
+        boolean usernameCheck = comment.getUsername().equals(SecurityUtil.getCurrentUser().getUsername());
         if (usernameCheck) {
             commentRepository.deleteById(commentId);
         } else {
