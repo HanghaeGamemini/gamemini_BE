@@ -23,22 +23,22 @@ public class User {
 
      @Column (nullable = false, unique = true)
      private String username;
-     
+
      @Column(nullable = false)
      private String password;
-     
+
      @Column(nullable = false)
      private String nickname;
 
      @OneToMany(mappedBy = "user")
-     private List<TestPost> posts = new ArrayList<>();
+     private List<Post> posts = new ArrayList<>();
 
 
 
 
 
 
-     
+
      public User(SignupRequestDto requestDto, String password) {
           this.username = requestDto.getUsername();
           this.password = password;

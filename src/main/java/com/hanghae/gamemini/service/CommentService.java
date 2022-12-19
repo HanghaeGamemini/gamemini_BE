@@ -6,9 +6,9 @@ import com.hanghae.gamemini.dto.PrivateResponseBody;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
 import com.hanghae.gamemini.model.Comment;
-import com.hanghae.gamemini.model.TestPost;
+import com.hanghae.gamemini.model.Post;
 import com.hanghae.gamemini.repository.CommentRepository;
-import com.hanghae.gamemini.repository.TestPostRepository;
+import com.hanghae.gamemini.repository.PostRepository;
 import com.hanghae.gamemini.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,13 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CommentService {
 
-    private final TestPostRepository postRepository;
+    private final PostRepository postRepository;
 
     private final CommentRepository commentRepository;
 
     @Transactional
     public ResponseEntity<?> postComment(Long postId, CommentRequestDto requestDto) {
-        TestPost post = postRepository.findById(postId).orElseThrow(
+        Post post = postRepository.findById(postId).orElseThrow(
                 () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
         );
         Comment save = new Comment(SecurityUtil.getCurrentUser(), post, requestDto);
