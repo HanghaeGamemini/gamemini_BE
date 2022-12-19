@@ -86,7 +86,6 @@ public class PostService {
           if(post.getUsername().equals(user.getUsername())){
                post.update(postRequestDto);
 
-
           }
           return CommonStatusCode.OK.getStatusMsg();
      }

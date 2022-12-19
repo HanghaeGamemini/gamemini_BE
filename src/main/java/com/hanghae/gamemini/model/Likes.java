@@ -19,6 +19,7 @@ public class Likes extends Timestamped implements Supplier<Likes> {
     private boolean isLike;
 
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

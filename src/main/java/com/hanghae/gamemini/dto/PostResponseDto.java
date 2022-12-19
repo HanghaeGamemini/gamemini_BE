@@ -14,6 +14,13 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 public class PostResponseDto {
+
+    private String username;
+
+
+    public PostResponseDto(Post post){
+        this.username = post.getUsername();
+    }
     
     @Getter
     @NoArgsConstructor
