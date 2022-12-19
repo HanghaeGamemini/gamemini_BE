@@ -22,11 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -42,7 +40,7 @@ public class PostService {
      @Value ("${part.upload.path}")
      private String uploadPath;
 
-     private PostRepository postRepository;
+     private final PostRepository postRepository;
 
      //전체글 조회
      @Transactional(readOnly = true)
@@ -53,8 +51,6 @@ public class PostService {
                .map(post -> new PostResponseDto.AllPostResponseDto(post, true, "temp")) // todo isLike 수정필요
                .collect(Collectors.toList());
      }
-
-
 
      //글 선택 조회
      @Transactional(readOnly = true)
@@ -68,9 +64,7 @@ public class PostService {
           );
           return new PostResponseDto.DetailResponse(post, true, user);
      }
-
      //게시글 작성
-
      @Transactional
      public void createPost(PostRequestDto postRequestDto) {
           User user = SecurityUtil.getCurrentUser();
@@ -84,6 +78,8 @@ public class PostService {
           );
           if(post.getUsername().equals(user.getUsername())){
                post.update(postRequestDto);
+
+
           }
           return CommonStatusCode.OK.getStatusMsg();
      }
