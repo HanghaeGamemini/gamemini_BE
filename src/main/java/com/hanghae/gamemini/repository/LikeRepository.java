@@ -1,7 +1,7 @@
 package com.hanghae.gamemini.repository;
 
 import com.hanghae.gamemini.model.Likes;
-import com.hanghae.gamemini.model.TestPost;
+import com.hanghae.gamemini.model.Post;
 import com.hanghae.gamemini.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,7 +13,7 @@ public interface LikeRepository extends JpaRepository<Likes, Long> {
 
     List<Likes> findByUserId(Long userId);
 
-    boolean existsByUserAndPost(User user, TestPost post);
+    boolean existsByUserAndPost(User user, Post post);
 
 
 }

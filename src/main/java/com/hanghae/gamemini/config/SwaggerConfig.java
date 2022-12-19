@@ -17,7 +17,7 @@ import java.util.List;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
-     
+
      @Bean
      public Docket api() {
           return new Docket(DocumentationType.SWAGGER_2)
@@ -44,11 +44,11 @@ public class SwaggerConfig {
                .build()
                ;
      }
-     
+
      private ApiKey apiKey() {
           return new ApiKey("Authorization", "Authorization", "header");
      }
-     
+
      private SecurityContext securityContext() {
           return springfox
                .documentation
@@ -58,7 +58,7 @@ public class SwaggerConfig {
                .builder()
                .securityReferences(defaultAuth()).forPaths(PathSelectors.any()).build();
      }
-     
+
      List<SecurityReference> defaultAuth() {
           AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
           AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
