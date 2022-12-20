@@ -94,8 +94,8 @@ public class PostService {
      @Transactional
      public PostResponseDto.createResponse createPost(PostRequestDto postRequestDto, MultipartFile file) {
           User user = SecurityUtil.getCurrentUser();
-//          String imgUrl = "abc";
-          Post post = postRepository.saveAndFlush(new Post(postRequestDto, user.getUsername()));
+          String imgUrl = s3Uploader.upload(file, "postImage");
+          Post post = postRepository.saveAndFlush(new Post(postRequestDto, user.getUsername(), imgUrl));
           return new PostResponseDto.createResponse(post, user.getNickname());
      }
      
@@ -107,6 +107,9 @@ public class PostService {
                () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
           String imgUrl = null;
+          if (!file.isEmpty()) {
+               imgUrl = s3Uploader.upload(file, "postImage");
+          }
           if (post.getUsername().equals(user.getUsername())) { // 해당게시글작성자가 현재유저인 경우
                post.update(postRequestDto, imgUrl);
           } else {
@@ -129,6 +132,7 @@ public class PostService {
                throw new RestApiException(CommonStatusCode.INVALID_USER);
           }
      }
+     
      ////////////////////////////////////////////////////////////////
      public void createPost2(PostRequestDto postRequestDto, MultipartFile file, String realPath) {
 //          User user = SecurityUtil.getCurrentUser();
