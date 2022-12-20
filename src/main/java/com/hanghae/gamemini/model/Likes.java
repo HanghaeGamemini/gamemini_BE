@@ -33,17 +33,6 @@ public class Likes extends Timestamped implements Supplier<Likes> {
         this.isLike = true;
     }
 
-
-
-
-    public void falseIsLike() {
-        this.isLike = false;
-    }
-
-    public void trueIsLike() {
-        this.isLike = true;
-    }
-
     @Override
     public Likes get() {
         return null;
