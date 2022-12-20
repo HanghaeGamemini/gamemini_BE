@@ -74,29 +74,33 @@ public class PostService {
      }
 
      //게시글 수정
-     public String updatePost(Long id, PostRequestDto postRequestDto, User user) {
+     @Transactional
+     public PostResponseDto.DetailResponse updatePost(Long id, PostRequestDto postRequestDto, MultipartFile file) {
+          User user = SecurityUtil.getCurrentUser();
           Post post = postRepository.findById(id).orElseThrow(
                   () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
-          if(post.getUsername().equals(user.getUsername())){
-               post.update(postRequestDto);
-
-
+          String imgUrl = null;
+          if(post.getUsername().equals(user.getUsername())){ // 해당게시글작성자가 현재유저인 경우
+               post.update(postRequestDto, imgUrl);
+          }else{
+               throw new RestApiException(CommonStatusCode.INVALID_USER);
           }
-          return CommonStatusCode.OK.getStatusMsg();
+          return new PostResponseDto.DetailResponse(post,true, user); // 수정필요
      }
      //게시글 삭제
 
      @Transactional
-     public String deletePost(Long id, User user){
-
+     public void deletePost(Long id){  // soft하게 수정필요
+          User user = SecurityUtil.getCurrentUser();
           Post post = postRepository.findById(id).orElseThrow(
                   () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
           if(post.getUsername().equals(user.getUsername())){
                postRepository.deleteById(id);
+          }else{
+               throw new RestApiException(CommonStatusCode.INVALID_USER);
           }
-          return CommonStatusCode.OK.getStatusMsg();
      }
      
      public void createPost2(PostRequestDto postRequestDto, MultipartFile file, String realPath){

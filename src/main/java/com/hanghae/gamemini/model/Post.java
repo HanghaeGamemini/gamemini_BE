@@ -16,7 +16,7 @@ import java.util.List;
 public class Post extends Timestamped {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
@@ -54,9 +54,10 @@ public class Post extends Timestamped {
     }
 
 
-    public void update(PostRequestDto postRequestDto){
+    public void update(PostRequestDto postRequestDto, String imgUrl){
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
+        this.imgUrl = imgUrl;
     }
 
     public void like() {
