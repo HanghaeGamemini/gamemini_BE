@@ -19,4 +19,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     void updatePostDeleted(@Param(value="id") Long id);
     
     Optional<Post> findByIdAndDeletedIsNull(Long id);
+
+
+
+    List<Post> findAllByUsername(String username);
 }

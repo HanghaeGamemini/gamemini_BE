@@ -72,4 +72,8 @@ public class Post extends Timestamped {
     }
 
 
+    public void nicknameUpdate(String 탈퇴한사용자) {
+
+
+    }
 }

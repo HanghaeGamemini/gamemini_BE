@@ -2,6 +2,7 @@ package com.hanghae.gamemini.service;
 
 import com.hanghae.gamemini.dto.UpdateProfileRequestDto;
 import com.hanghae.gamemini.dto.UpdateProfileResponseDto;
+import com.hanghae.gamemini.model.Post;
 import com.hanghae.gamemini.model.User;
 import com.hanghae.gamemini.repository.PostRepository;
 import com.hanghae.gamemini.repository.UserRepository;
@@ -9,6 +10,8 @@ import com.hanghae.gamemini.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +33,11 @@ public class MyPageService {
     public void deleteUser() {
         User user = SecurityUtil.getCurrentUser();
         userRepository.deleteById(user.getId());
-//        Post post = postRepository.find
+        List<Post> posts = postRepository.findAllByUsername(user.getUsername());
+        for(Post post : posts){
+            post.nicknameUpdate("탈퇴한사용자");
+        }
+
+
     }
 }
