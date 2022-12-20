@@ -15,6 +15,7 @@ import com.hanghae.gamemini.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -47,11 +48,14 @@ public class PostService {
      
      //전체글 조회
      @Transactional (readOnly = true)
-     public List<PostResponseDto.AllPostResponseDto> getPost(int page, int size) {
+     public PostResponseDto.AllPostResponseDtoWithTotalPage getPost(int page, int size) {
           User user = SecurityUtil.getCurrentUser();// 비회원일경우 null
           Pageable pageable = PageRequest.of(page, size); // page : zero-based page index, size : the size of the page to be returned,
           // pageable 적용, 생성일 기준 내림차순하여 findAll
-          return postRepository.findAllByAndDeletedIsNullOrderByCreatedAtDesc(pageable).stream()
+          Page<Post> postList = postRepository.findAllByAndDeletedIsNullOrderByCreatedAtDesc(pageable);
+          log.info(">>>>>>>>>>>>>getTotalPages : {}", postList.getTotalPages());
+     
+          List<PostResponseDto.AllPostResponseDto> data = postList.stream()
                .map(post -> {
                     boolean isLike = false;
                     // user login한 경우
@@ -63,10 +67,12 @@ public class PostService {
                     User author = userRepository.findByUsername(post.getUsername()).orElseThrow(
                          () -> new RestApiException(UserStatusCode.NO_USER)
                     );
+                    
                     // 탈퇴한경우 > nickname 수정필요
                     return new PostResponseDto.AllPostResponseDto(post, isLike, author.getNickname());
                })
                .collect(Collectors.toList());
+          return new PostResponseDto.AllPostResponseDtoWithTotalPage(postList.getTotalPages(), data);
      }
      
      //글 선택 조회
