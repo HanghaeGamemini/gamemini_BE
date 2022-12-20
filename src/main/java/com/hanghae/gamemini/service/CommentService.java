@@ -25,20 +25,21 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public ResponseEntity<?> postComment(Long postId, CommentRequestDto requestDto) {
+    public CommentResponseDto postComment(Long postId, CommentRequestDto requestDto) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
         );
         Comment save = new Comment(SecurityUtil.getCurrentUser().getUsername(), post, requestDto);
         commentRepository.saveAndFlush(save);
 
-        return ResponseEntity.ok(new CommentResponseDto(save));
+        return new CommentResponseDto(save);
     }
 
     public ResponseEntity<PrivateResponseBody> deleteComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new RestApiException(CommonStatusCode.NO_COMMENT)
         );
+
         boolean usernameCheck = comment.getUsername().equals(SecurityUtil.getCurrentUser().getUsername());
         if (usernameCheck) {
             commentRepository.deleteById(commentId);

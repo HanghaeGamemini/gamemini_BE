@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
     private Long id;
     private String nickname;
+    private String profileUrl;
     private String content;
     private LocalDateTime CreatedAt;
     private LocalDateTime ModifiedAt;
@@ -18,6 +19,7 @@ public class CommentResponseDto {
     public CommentResponseDto(Comment comment) {
         this.id = comment.getId();
 //        this.nickname = comment.getUser().getNickname();
+//        this.profileUrl =
         this.content = comment.getContent();
         CreatedAt = comment.getCreatedAt();
         ModifiedAt = comment.getModifiedAt();

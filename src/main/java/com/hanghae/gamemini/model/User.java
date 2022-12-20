@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 // @Getter의 역할.. get메소드를 대신 생성해준다. 32~46줄 참조
 // @NoArgsConstructor의 역할.. 매개변수가 없는 기본 생성자를 대신 생성해준다. 15줄 참조
@@ -40,5 +38,11 @@ public class User {
           this.username = requestDto.getUsername();
           this.password = password;
           this.nickname = requestDto.getNickname();
+     }
+
+
+
+     public void nicknameUpdate(String nickname) {
+          this.nickname = nickname;
      }
 }
