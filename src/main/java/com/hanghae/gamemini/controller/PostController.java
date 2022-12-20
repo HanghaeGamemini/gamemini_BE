@@ -29,7 +29,7 @@ public class PostController {
     @GetMapping
     public ResponseEntity<PrivateResponseBody> getPost(
          @RequestParam(value = "page", defaultValue = "1") int page,
-         @RequestParam(value="size", defaultValue = "5") int size
+         @RequestParam(value="size", defaultValue = "8") int size
     ){
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.getPost(page-1, size)), HttpStatus.OK);
     }

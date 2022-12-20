@@ -51,7 +51,7 @@ public class PostService {
           User user = SecurityUtil.getCurrentUser();// 비회원일경우 null
           Pageable pageable = PageRequest.of(page, size); // page : zero-based page index, size : the size of the page to be returned,
           // pageable 적용, 생성일 기준 내림차순하여 findAll
-          return postRepository.findAllByOrderByCreatedAtDesc(pageable).stream()
+          return postRepository.findAllByAndDeletedIsNullOrderByCreatedAtDesc(pageable).stream()
                .map(post -> {
                     boolean isLike = false;
                     // user login한 경우
@@ -74,7 +74,8 @@ public class PostService {
      public PostResponseDto.DetailResponse detailPost(Long id) {
           User user = SecurityUtil.getCurrentUser();// 비회원일경우 null
           // 포스트 유무 확인
-          Post post = postRepository.findById(id).orElseThrow(
+          Post post = postRepository.findByIdAndDeletedIsNull(id).orElseThrow(
+               // 삭제 or 존재하지않는 글일경우
                () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
           // 해당 게시글을 작성한 user find
@@ -102,7 +103,7 @@ public class PostService {
      @Transactional
      public PostResponseDto.DetailResponse updatePost(Long id, PostRequestDto postRequestDto, MultipartFile file) {
           User user = SecurityUtil.getCurrentUser();
-          Post post = postRepository.findById(id).orElseThrow(
+          Post post = postRepository.findByIdAndDeletedIsNull(id).orElseThrow(
                () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
           String imgUrl = null;
