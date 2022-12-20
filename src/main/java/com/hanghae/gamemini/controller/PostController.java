@@ -29,7 +29,7 @@ public class PostController {
     @GetMapping
     public ResponseEntity<PrivateResponseBody> getPost(
          @RequestParam(value = "page", defaultValue = "1") int page,
-         @RequestParam(value="size", defaultValue = "5") int size
+         @RequestParam(value="size", defaultValue = "8") int size
     ){
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.getPost(page-1, size)), HttpStatus.OK);
     }
@@ -47,9 +47,7 @@ public class PostController {
          @RequestPart(value="file", required = false) MultipartFile multipartFile,
          HttpServletRequest request){
         String realPath = request.getSession().getServletContext().getRealPath("/");
-        log.info("requestDto.contnet: {}, title: {}", requestDto.getContent(), requestDto.getTitle());
-        postService.createPost(requestDto, multipartFile);
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.CREATE_POST), HttpStatus.OK);
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.CREATE_POST, postService.createPost(requestDto, multipartFile)), HttpStatus.OK);
     }
     
     // 서버에 이미지 저장ver

@@ -32,6 +32,9 @@ public class User {
      
      @Column
      private String profileUrl;
+     
+     @Column
+     private Boolean deleted;
 
      public User(SignupRequestDto requestDto, String password) {
           this.username = requestDto.getUsername();

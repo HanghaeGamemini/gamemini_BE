@@ -59,13 +59,13 @@ public class PostResponseDto {
         private LocalDateTime CreatedAt;
         private LocalDateTime ModifiedAt;
     
-        public DetailResponse(Post post, boolean isLike,User user) {
+        public DetailResponse(Post post, boolean isLike,User author) {
             this.id = post.getId();
-            this.profileUrl = user.getProfileUrl();
+            this.profileUrl = author.getProfileUrl();
             this.title = post.getTitle();
             this.content = post.getContent();
             this.imgUrl = post.getImgUrl();
-            this.nickName = user.getNickname();
+            this.nickName = author.getNickname();
             //Todo N+1 해결하기
             this.commentList = post.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
             this.isLike = isLike;
@@ -74,6 +74,30 @@ public class PostResponseDto {
             this.ModifiedAt = post.getModifiedAt();
         }
     }
+    @Getter
+    @NoArgsConstructor
+    public static class createResponse {
+        private Long id;
+        private String title;
+        private String content;
+        private String imgUrl;
+        private String nickName;
+        private int likes;
+        private LocalDateTime CreatedAt;
+        private LocalDateTime ModifiedAt;
+    
+        public createResponse(Post post, String nickName) {
+            this.id = post.getId();
+            this.title = post.getTitle();
+            this.content = post.getContent();
+            this.imgUrl = post.getImgUrl();
+            this.nickName = nickName;
+            this.likes = post.getLikes(); // 수정필요
+            this.CreatedAt = post.getCreatedAt();
+            this.ModifiedAt = post.getModifiedAt();
+        }
+    }
+    
 //    public TestPostResponseDto(TestPost post) {
 //        this.title = post.getTitle();
 //        this.username = post.getUser().getUsername();

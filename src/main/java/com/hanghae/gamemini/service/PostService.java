@@ -40,77 +40,97 @@ public class PostService {
      
      @Value ("${part.upload.path}")
      private String uploadPath;
-
+     
      private final PostRepository postRepository;
-
+     
      private final LikeRepository likeRepository;
-
+     
      //전체글 조회
-     @Transactional(readOnly = true)
+     @Transactional (readOnly = true)
      public List<PostResponseDto.AllPostResponseDto> getPost(int page, int size) {
+          User user = SecurityUtil.getCurrentUser();// 비회원일경우 null
           Pageable pageable = PageRequest.of(page, size); // page : zero-based page index, size : the size of the page to be returned,
           // pageable 적용, 생성일 기준 내림차순하여 findAll
-          return postRepository.findAllByOrderByCreatedAtDesc(pageable).stream()
+          return postRepository.findAllByAndDeletedIsNullOrderByCreatedAtDesc(pageable).stream()
                .map(post -> {
-                    boolean isLike = likeRepository.existsByUserAndPost(SecurityUtil.getCurrentUser(), post);
-                    return new PostResponseDto.AllPostResponseDto(post, isLike, "temp");
-               }) // todo isLike 수정필요
+                    boolean isLike = false;
+                    // user login한 경우
+                    if (user != null) {
+                         // 현재유저의 해당 게시글 좋아요 유무
+                         isLike = likeRepository.existsByUserAndPost(user, post);
+                    }
+                    // 해당 게시글 저자 확인
+                    User author = userRepository.findByUsername(post.getUsername()).orElseThrow(
+                         () -> new RestApiException(UserStatusCode.NO_USER)
+                    );
+                    // 탈퇴한경우 > nickname 수정필요
+                    return new PostResponseDto.AllPostResponseDto(post, isLike, author.getNickname());
+               })
                .collect(Collectors.toList());
      }
-
+     
      //글 선택 조회
-     @Transactional(readOnly = true)
-     public PostResponseDto.DetailResponse detailPost(Long id){
+     @Transactional (readOnly = true)
+     public PostResponseDto.DetailResponse detailPost(Long id) {
+          User user = SecurityUtil.getCurrentUser();// 비회원일경우 null
           // 포스트 유무 확인
-          Post post = postRepository.findById(id).orElseThrow(
-                  () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
+          Post post = postRepository.findByIdAndDeletedIsNull(id).orElseThrow(
+               // 삭제 or 존재하지않는 글일경우
+               () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
           // 해당 게시글을 작성한 user find
-          User user = userRepository.findByUsername(post.getUsername()).orElseThrow(
+          User author = userRepository.findByUsername(post.getUsername()).orElseThrow(
                () -> new RestApiException(UserStatusCode.NO_USER)
           );
-          boolean isLike = likeRepository.existsByUserAndPost(SecurityUtil.getCurrentUser(), post);
-          return new PostResponseDto.DetailResponse(post, isLike, user);
+          boolean isLike = false;
+          // user login한 경우
+          if (user != null) {
+               isLike = likeRepository.existsByUserAndPost(user, post);
+          }
+          return new PostResponseDto.DetailResponse(post, isLike, author);
      }
+     
      //게시글 작성
      @Transactional
-     public void createPost(PostRequestDto postRequestDto, MultipartFile file) {
+     public PostResponseDto.createResponse createPost(PostRequestDto postRequestDto, MultipartFile file) {
           User user = SecurityUtil.getCurrentUser();
-          String imgUrl = "abc";
-          postRepository.saveAndFlush(new Post(postRequestDto, user.getUsername(), imgUrl));
+//          String imgUrl = "abc";
+          Post post = postRepository.saveAndFlush(new Post(postRequestDto, user.getUsername()));
+          return new PostResponseDto.createResponse(post, user.getNickname());
      }
-
+     
      //게시글 수정
      @Transactional
      public PostResponseDto.DetailResponse updatePost(Long id, PostRequestDto postRequestDto, MultipartFile file) {
           User user = SecurityUtil.getCurrentUser();
-          Post post = postRepository.findById(id).orElseThrow(
-                  () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
+          Post post = postRepository.findByIdAndDeletedIsNull(id).orElseThrow(
+               () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
           String imgUrl = null;
-          if(post.getUsername().equals(user.getUsername())){ // 해당게시글작성자가 현재유저인 경우
+          if (post.getUsername().equals(user.getUsername())) { // 해당게시글작성자가 현재유저인 경우
                post.update(postRequestDto, imgUrl);
-          }else{
+          } else {
                throw new RestApiException(CommonStatusCode.INVALID_USER);
           }
-          return new PostResponseDto.DetailResponse(post,true, user); // 수정필요
+          return new PostResponseDto.DetailResponse(post, true, user); // 수정필요
      }
      //게시글 삭제
-
+     
      @Transactional
-     public void deletePost(Long id){  // soft하게 수정필요
-          User user = SecurityUtil.getCurrentUser();
-          Post post = postRepository.findById(id).orElseThrow(
-                  () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
+     public void deletePost(Long id) {  // soft하게 수정필요
+          User user = SecurityUtil.getCurrentUser(); // 현재 로그인 유저
+          Post post = postRepository.findById(id).orElseThrow( // 현재 게시글
+               () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
-          if(post.getUsername().equals(user.getUsername())){
-               postRepository.deleteById(id);
-          }else{
+          if (post.getUsername().equals(user.getUsername())) {
+//               postRepository.deleteById(id);
+               postRepository.updatePostDeleted(id);
+          } else {
                throw new RestApiException(CommonStatusCode.INVALID_USER);
           }
      }
-     
-     public void createPost2(PostRequestDto postRequestDto, MultipartFile file, String realPath){
+     ////////////////////////////////////////////////////////////////
+     public void createPost2(PostRequestDto postRequestDto, MultipartFile file, String realPath) {
 //          User user = SecurityUtil.getCurrentUser();
           // 이미지 업로드 .upload(파일, 경로)
           String originalName = file.getOriginalFilename();//파일명:모든 경로를 포함한 파일이름
@@ -121,7 +141,7 @@ public class PostService {
 //          String imgPath = s3Uploader.upload(file,"images");
      }
      
-     public String uploadFile(MultipartFile file, String realPath){
+     public String uploadFile(MultipartFile file, String realPath) {
           // 파일이 없을경우
           if (file.isEmpty()) return null;
           // 이미지형식이 아닐경우
@@ -130,16 +150,16 @@ public class PostService {
           
           String originalFileName = file.getOriginalFilename();
           String fileUUName = createFileName(file.getOriginalFilename()); // 중복되지않는 새 파일이름 생성
-          log.info("✅ originalFileName : {}, fileUUName : {}" ,originalFileName, fileUUName);
+          log.info("✅ originalFileName : {}, fileUUName : {}", originalFileName, fileUUName);
           // s3 적용전 버전
           String saveName = uploadPath + fileUUName; // 저장할 파일경로.파일이름 // File.separator +
           Path savePath = Paths.get(saveName); // 파일의 저장경로(경로 정의)
           log.info("✅ saveName : {}, savePath : {}", saveName, savePath);
           try {
                file.transferTo(savePath); // 지정 경로에 파일저장
-          }catch (IOException e){
+          } catch (IOException e) {
                log.info("🛑" + e.getMessage());
-               log.info("🛑" );
+               log.info("🛑");
                e.printStackTrace();
                throw new RestApiException(CommonStatusCode.FILE_SAVE_FAIL);
           }
@@ -148,7 +168,7 @@ public class PostService {
      }
      
      private String createFileName(String fileName) { // 먼저 파일 업로드 시, 파일명을 난수화하기 위해 random으로 변환
-          return UUID.randomUUID().toString().concat("_"+fileName);
+          return UUID.randomUUID().toString().concat("_" + fileName);
      }
      
      private String getFileExtension(String fileName) { // file 형식이 잘못된 경우를 확인하기 위해 만들어진 로직이며, 파일 타입과 상관없이 업로드할 수 있게 하기 위해 .의 존재 유무만 판단하였습니다.
