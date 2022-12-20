@@ -77,7 +77,6 @@ public class S3Uploader {
      }
      
      private Optional<File> convert(MultipartFile file) throws IOException {
-          log.info("🛑file.getOriginalFilename() : {}" , file.getOriginalFilename());
           File convertFile = new File(file.getOriginalFilename()); // 이름겹치는 오류생길경우 여기부터 UUID 적용해도 될듯
           if(convertFile.createNewFile()) {
                try (FileOutputStream fos = new FileOutputStream(convertFile)) {
