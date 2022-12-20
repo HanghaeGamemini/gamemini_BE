@@ -2,7 +2,6 @@ package com.hanghae.gamemini.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
 import javax.persistence.*;
 import java.util.function.Supplier;
 
@@ -17,7 +16,6 @@ public class Likes extends Timestamped implements Supplier<Likes> {
 
     @Column(nullable = false)
     private boolean isLike;
-
 
 
     @ManyToOne(fetch = FetchType.LAZY)
