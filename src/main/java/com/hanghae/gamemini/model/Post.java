@@ -34,6 +34,9 @@ public class Post extends Timestamped {
     @Column
     private String username;
     
+    @Column
+    private Boolean deleted;
+    
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("id asc")
     List<Comment> comments = new ArrayList<>();

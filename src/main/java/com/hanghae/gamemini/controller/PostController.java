@@ -47,9 +47,7 @@ public class PostController {
          @RequestPart(value="file", required = false) MultipartFile multipartFile,
          HttpServletRequest request){
         String realPath = request.getSession().getServletContext().getRealPath("/");
-        log.info("requestDto.contnet: {}, title: {}", requestDto.getContent(), requestDto.getTitle());
-        postService.createPost(requestDto, multipartFile);
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.CREATE_POST), HttpStatus.OK);
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.CREATE_POST, postService.createPost(requestDto, multipartFile)), HttpStatus.OK);
     }
     
     // 서버에 이미지 저장ver

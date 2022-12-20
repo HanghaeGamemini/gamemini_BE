@@ -3,6 +3,7 @@ package com.hanghae.gamemini.service;
 
 import com.hanghae.gamemini.dto.LoginRequestDto;
 import com.hanghae.gamemini.dto.SignupRequestDto;
+import com.hanghae.gamemini.dto.tempLoginResponseDto;
 import com.hanghae.gamemini.errorcode.UserStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
 import com.hanghae.gamemini.jwt.JwtUtil;
@@ -46,7 +47,7 @@ public class UserService {
     }
 
     @Transactional
-    public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public tempLoginResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
 
@@ -59,5 +60,6 @@ public class UserService {
             throw  new RestApiException(UserStatusCode.WRONG_PASSWORD);
         }
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
+        return new tempLoginResponseDto(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
     }
 }
