@@ -15,5 +15,4 @@ public class PostRequestDto {
 //    @ApiModelProperty (value="게시글 제목")
     private String title;
     private String content;
-    private String imgUrl;
 }

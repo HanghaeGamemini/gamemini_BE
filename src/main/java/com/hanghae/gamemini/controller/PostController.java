@@ -2,6 +2,7 @@ package com.hanghae.gamemini.controller;
 
 
 import com.hanghae.gamemini.dto.PostRequestDto;
+import com.hanghae.gamemini.dto.PostResponseDto;
 import com.hanghae.gamemini.dto.PrivateResponseBody;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.security.UserDetailsImpl;
@@ -18,14 +19,14 @@ import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/post")
 @RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
 
     //전체조회
-    @GetMapping("/post")
+    @GetMapping
     public ResponseEntity<PrivateResponseBody> getPost(
          @RequestParam(value = "page", defaultValue = "1") int page,
          @RequestParam(value="size", defaultValue = "5") int size
@@ -34,39 +35,49 @@ public class PostController {
     }
 
     //선택조회
-    @GetMapping("post/{id}")
+    @GetMapping("/{id}")
     public  ResponseEntity<PrivateResponseBody> detailPost(@PathVariable Long id){
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.detailPost(id)),HttpStatus.OK);
     }
 
     //게시글 작성
-    @PostMapping("/post")
-    public ResponseEntity<PrivateResponseBody> createPost(@RequestBody PostRequestDto postRequestDto){
-        postService.createPost(postRequestDto);
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK), HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<PrivateResponseBody> createPost(
+         @RequestPart(value="requestDto", required = true) PostRequestDto requestDto,
+         @RequestPart(value="file", required = false) MultipartFile multipartFile,
+         HttpServletRequest request){
+        String realPath = request.getSession().getServletContext().getRealPath("/");
+        log.info("requestDto.contnet: {}, title: {}", requestDto.getContent(), requestDto.getTitle());
+        postService.createPost(requestDto, multipartFile);
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.CREATE_POST), HttpStatus.OK);
     }
     
+    // 서버에 이미지 저장ver
     @PostMapping("/post2")
     public ResponseEntity<PrivateResponseBody> createPost2(
          @RequestPart PostRequestDto postRequestDto,
-         @RequestPart(value="file", required = false) MultipartFile multipartFile, HttpServletRequest request){
+         @RequestPart(value="file", required = false) MultipartFile multipartFile,
+         HttpServletRequest request){  // 필요없을지도
         String realPath = request.getSession().getServletContext().getRealPath("/");
         log.info("realPath : {}", realPath);
-        postService.createPost2(postRequestDto , multipartFile, realPath);
+        postService.createPost2(postRequestDto , multipartFile, realPath);  // 필요없을지도
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK), HttpStatus.OK);
     }
 
     //게시글 수정
-    @PutMapping("/post/{id}")
-    public ResponseEntity<PrivateResponseBody> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        PrivateResponseBody privateResponseBody = new PrivateResponseBody();
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.updatePost(id, postRequestDto, userDetails.getUser())), HttpStatus.OK);
+    @PutMapping("/{id}")
+    public ResponseEntity<PrivateResponseBody> updatePost(
+         @PathVariable Long id,
+         @RequestPart(value="requestDto", required = true) PostRequestDto postRequestDto,
+         @RequestPart(value="file", required = false) MultipartFile multipartFile){
+        PostResponseDto.DetailResponse responseDto = postService.updatePost(id, postRequestDto, multipartFile);
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, responseDto), HttpStatus.OK);
     }
 
     //게시글 삭제
-    @DeleteMapping("/post/{id}")
-    public ResponseEntity<PrivateResponseBody> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.deletePost(id, userDetails.getUser())), HttpStatus.OK);
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<PrivateResponseBody> deletePost(@PathVariable Long id) {
+        postService.deletePost(id);
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.DELETE_POST), HttpStatus.OK);
     }
 }

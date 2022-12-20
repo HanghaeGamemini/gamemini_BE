@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Api(tags="게시글 컨트롤러")
@@ -15,7 +16,7 @@ import java.util.List;
 public class Post extends Timestamped {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
@@ -28,25 +29,35 @@ public class Post extends Timestamped {
     private String imgUrl;
 
     @Column
-    private int likes;
-
+    private int likes;  // todo 제거필요
+    
     @Column
     private String username;
     
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("id asc")
-    List<Comment> comments;
-
+    List<Comment> comments = new ArrayList<>();
+    
+    // img 없는경우
     public Post(PostRequestDto postRequestDto, String username) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
         this.username = username;
     }
 
-
-    public void update(PostRequestDto postRequestDto){
+    // img 있는경우
+    public Post(PostRequestDto postRequestDto, String username, String imgUrl) {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
+        this.username = username;
+        this.imgUrl = imgUrl;
+    }
+
+
+    public void update(PostRequestDto postRequestDto, String imgUrl){
+        this.title = postRequestDto.getTitle();
+        this.content = postRequestDto.getContent();
+        this.imgUrl = imgUrl;
     }
 
     public void like() {
