@@ -31,11 +31,10 @@ public class S3Uploader {
      private String bucket;
      
      public String upload(MultipartFile multipartFile, String dirName) {
-          if(multipartFile == null) return null;
+          if(multipartFile.getContentType() == null) return null;
           // MultipartFile을 File객체로 변환
-     
           // 이미지형식이 아닐경우
-          if (multipartFile.getContentType() == null || !(multipartFile.getContentType().equals("image/png") || multipartFile.getContentType().equals("image/jpeg")))
+          if (!(multipartFile.getContentType().equals("image/png") || multipartFile.getContentType().equals("image/jpeg")))
                throw new RestApiException(CommonStatusCode.WRONG_IMAGE_FORMAT);
           
           File uploadFile = null;
