@@ -98,15 +98,31 @@ public class PostResponseDto {
         }
     }
     
-//    public TestPostResponseDto(TestPost post) {
-//        this.title = post.getTitle();
-//        this.username = post.getUser().getUsername();
-//        this.content = post.getContent();
-//        this.CreatedAt = post.getCreatedAt();
-//        this.ModifiedAt = post.getModifiedAt();
-//        this.likes = post.getLikes();
-//        this.isLike = post.getLike().isLike();
-//    }
+    @Getter
+    @NoArgsConstructor
+    public static class getUpdateResponse {
+        
+        private Long id;
+        private String profileUrl;
+        private String title;
+        private String content;
+        private String imgUrl;
+        private String nickName;
+        private LocalDateTime CreatedAt;
+        private LocalDateTime ModifiedAt;
+        
+        public getUpdateResponse(Post post, User author) {
+            this.id = post.getId();
+            this.profileUrl = author.getProfileUrl();
+            this.title = post.getTitle();
+            this.content = post.getContent();
+            this.imgUrl = post.getImgUrl();
+            this.nickName = author.getNickname();
+            this.CreatedAt = post.getCreatedAt();
+            this.ModifiedAt = post.getModifiedAt();
+        }
+    }
+    
 
 }
 

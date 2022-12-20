@@ -46,7 +46,6 @@ public class PostController {
          @RequestPart(value="requestDto", required = true) PostRequestDto requestDto,
          @RequestPart(value="file", required = false) MultipartFile multipartFile,
          HttpServletRequest request){
-        String realPath = request.getSession().getServletContext().getRealPath("/");
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.CREATE_POST, postService.createPost(requestDto, multipartFile)), HttpStatus.OK);
     }
     
@@ -61,6 +60,13 @@ public class PostController {
         postService.createPost2(postRequestDto , multipartFile, realPath);  // 필요없을지도
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK), HttpStatus.OK);
     }
+    @GetMapping("/update/{id}")
+    public ResponseEntity<PrivateResponseBody> updatePost(
+         @PathVariable Long id){
+        PostResponseDto.getUpdateResponse responseDto = postService.getUpdatePost(id);
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, responseDto), HttpStatus.OK);
+    }
+    
 
     //게시글 수정
     @PutMapping("/{id}")
@@ -68,8 +74,8 @@ public class PostController {
          @PathVariable Long id,
          @RequestPart(value="requestDto", required = true) PostRequestDto postRequestDto,
          @RequestPart(value="file", required = false) MultipartFile multipartFile){
-        PostResponseDto.DetailResponse responseDto = postService.updatePost(id, postRequestDto, multipartFile);
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, responseDto), HttpStatus.OK);
+        postService.updatePost(id, postRequestDto, multipartFile);
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.UPDATE_POST), HttpStatus.OK);
     }
 
     //게시글 삭제

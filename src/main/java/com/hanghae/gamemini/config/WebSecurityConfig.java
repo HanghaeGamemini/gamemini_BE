@@ -43,7 +43,8 @@ public class WebSecurityConfig {
           http.authorizeRequests()
                // 토큰검증 필요없는 페이지 설정
                .antMatchers(HttpMethod.POST, "/api/user/**").permitAll()
-               .antMatchers(HttpMethod.GET, "/api/post*/**").permitAll()
+               .antMatchers(HttpMethod.GET, "/api/post/{\\d+}").permitAll()
+               .antMatchers(HttpMethod.GET, "/api/post").permitAll()
                .antMatchers(HttpMethod.GET, "/api/user/login-page").permitAll()
                .antMatchers("/api/doc").permitAll()
                .antMatchers("/swagger-ui/**").permitAll() //스웨거 권한설정 X

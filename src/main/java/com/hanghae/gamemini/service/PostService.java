@@ -94,25 +94,28 @@ public class PostService {
      @Transactional
      public PostResponseDto.createResponse createPost(PostRequestDto postRequestDto, MultipartFile file) {
           User user = SecurityUtil.getCurrentUser();
-//          String imgUrl = "abc";
-          Post post = postRepository.saveAndFlush(new Post(postRequestDto, user.getUsername()));
+          String imgUrl = s3Uploader.upload(file, "postImage");
+          Post post = postRepository.saveAndFlush(new Post(postRequestDto, user.getUsername(), imgUrl));
           return new PostResponseDto.createResponse(post, user.getNickname());
      }
      
      //게시글 수정
      @Transactional
-     public PostResponseDto.DetailResponse updatePost(Long id, PostRequestDto postRequestDto, MultipartFile file) {
+     public void updatePost(Long id, PostRequestDto postRequestDto, MultipartFile file) {
           User user = SecurityUtil.getCurrentUser();
           Post post = postRepository.findByIdAndDeletedIsNull(id).orElseThrow(
                () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
-          String imgUrl = null;
-          if (post.getUsername().equals(user.getUsername())) { // 해당게시글작성자가 현재유저인 경우
-               post.update(postRequestDto, imgUrl);
-          } else {
+          // 해당게시글작성자가 현재유저가 아닌 경우
+          if (post.getUsername().equals(user.getUsername())){
                throw new RestApiException(CommonStatusCode.INVALID_USER);
           }
-          return new PostResponseDto.DetailResponse(post, true, user); // 수정필요
+          
+          String imgUrl = null;
+          if (!file.isEmpty()) {
+               imgUrl = s3Uploader.upload(file, "postImage");
+          }
+          post.update(postRequestDto, imgUrl);
      }
      //게시글 삭제
      
@@ -129,6 +132,7 @@ public class PostService {
                throw new RestApiException(CommonStatusCode.INVALID_USER);
           }
      }
+     
      ////////////////////////////////////////////////////////////////
      public void createPost2(PostRequestDto postRequestDto, MultipartFile file, String realPath) {
 //          User user = SecurityUtil.getCurrentUser();
@@ -177,6 +181,16 @@ public class PostService {
           } catch (StringIndexOutOfBoundsException e) {
                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일(" + fileName + ") 입니다.");
           }
+     }
+     
+     // post 수정 get페이지
+     public PostResponseDto.getUpdateResponse getUpdatePost(Long id) {
+          User user = SecurityUtil.getCurrentUser(); // 현재 로그인 유저
+          if (user == null) throw new RestApiException(CommonStatusCode.INVALID_USER);
+          Post post = postRepository.findByIdAndUsername(id, user.getUsername()).orElseThrow(
+               () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
+          );
+          return new PostResponseDto.getUpdateResponse(post, user);
      }
 }
 
