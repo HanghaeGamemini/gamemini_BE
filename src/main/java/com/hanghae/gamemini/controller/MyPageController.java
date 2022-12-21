@@ -45,8 +45,8 @@ public class MyPageController {
     }
     //내가 작성한 댓글 불러오기
 
-    @GetMapping("/mypost/comeent")
-    public ResponseEntity<?> getMyCommen(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    @GetMapping("/mypost/comment")
+    public ResponseEntity<?> getMyComment(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                          @RequestParam(value = "page",defaultValue = "1") int page,
                                          @RequestParam(value = "size",defaultValue = "8")int size) {
         return myPageService.getMyComment(userDetails.getUser(),page, size);
