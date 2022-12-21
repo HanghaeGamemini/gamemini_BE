@@ -8,6 +8,6 @@ import javax.persistence.Id;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    List<Comment> findAllByUsername(Long id);
+    List<Comment> findAllByUsername(String username);
 
 }
