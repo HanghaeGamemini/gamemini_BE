@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/mypage")
 public class MyPageController {
-
     private final MyPageService myPageService;
 
     //내가 작성한 글 조회
@@ -32,14 +31,13 @@ public class MyPageController {
 
     //내가 좋아요한 게시글 불러오기
 
-    @GetMapping("/mypsot/like")
+    @GetMapping("/mypost/like")
     public ResponseEntity<?> getMyLikePost(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                            @RequestParam(value = "page",defaultValue = "1") int page,
                                            @RequestParam(value = "size", defaultValue = "8") int size) {
         return myPageService.getMyLikePost(userDetails.getUser(),page, size);
     }
     //내가 작성한 댓글 불러오기
-
     @GetMapping("/mypost/comment")
     public ResponseEntity<?> getMyComment(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                          @RequestParam(value = "page",defaultValue = "1") int page,
