@@ -26,11 +26,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 
     @Query(nativeQuery = true,
-            value = "Select * from post p join users u on p.username = u.username "
+            value = "Select p.* from post p join users u on p.username = u.username "
                      +"where u.nickname like %:nickname% and p.deleted is null "
                      +"order by created_at desc",
          countQuery = "select * from (" +
-                      "Select * from post p join users u on p.username = u.username "
+                      "Select p.* from post p join users u on p.username = u.username "
                       +"where u.nickname like %:nickname% and p.deleted is null "
                       +"order by created_at desc"
                       +") as ori")
