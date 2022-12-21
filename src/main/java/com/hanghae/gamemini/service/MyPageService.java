@@ -88,7 +88,7 @@ public class MyPageService {
     //내가 작성한 댓글 불러오기
     @Transactional
     public ResponseEntity<PrivateResponseBody> getMyComment(User user, int page, int size) {
-        List<Comment> comments = commentRepository.findAllByUsername(user.getId());
+        List<Comment> comments = commentRepository.findAllByUsername(user.getUsername());
         Pageable pageable = PageRequest.of(page,size);
         postRepository.findAllByOrderByCreatedAtDesc(pageable);
 

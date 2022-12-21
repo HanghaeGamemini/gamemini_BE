@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    List<Comment> findAllByUsername(Long id);
+    List<Comment> findAllByUsername(String username);
 
 
      @Query(value = "select t.*, u.nickname from comment t join users u on t.username = u.username\n" +
