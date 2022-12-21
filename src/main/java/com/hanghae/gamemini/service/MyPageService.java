@@ -1,7 +1,5 @@
 package com.hanghae.gamemini.service;
 
-
-import com.hanghae.gamemini.S3.S3Uploader;
 import com.hanghae.gamemini.dto.*;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
@@ -12,39 +10,27 @@ import com.hanghae.gamemini.model.User;
 import com.hanghae.gamemini.repository.CommentRepository;
 import com.hanghae.gamemini.repository.LikeRepository;
 import com.hanghae.gamemini.repository.PostRepository;
-import com.hanghae.gamemini.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 
-import java.nio.file.Path;
-import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MyPageService {
 
-    private final UserRepository userRepository;
 
-    private final S3Uploader s3Uploader;
-
-
-    @Value("${part.upload.path}")
-    private String uploadPath;
     public final PostRepository postRepository;
     public final CommentRepository commentRepository;
 
