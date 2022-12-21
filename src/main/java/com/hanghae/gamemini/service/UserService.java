@@ -3,6 +3,7 @@ package com.hanghae.gamemini.service;
 
 import com.hanghae.gamemini.dto.LoginRequestDto;
 import com.hanghae.gamemini.dto.SignupRequestDto;
+import com.hanghae.gamemini.dto.tempLoginResponseDto;
 import com.hanghae.gamemini.errorcode.UserStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
 import com.hanghae.gamemini.jwt.JwtUtil;
@@ -34,11 +35,16 @@ public class UserService {
         if(!pw.equals(pwdCheck)){
             throw new RestApiException(UserStatusCode.PASSWORD_CHECK);
         }
+        //username중복체크
         Optional<User> found = userRepository.findByUsername(requestDto.getUsername());
         if (found.isPresent()){
             throw new RestApiException(UserStatusCode.OVERLAPPED_USERNAME);
         }
-
+        //닉네임 중복체크
+        Optional<User> nicknameCheck = userRepository.findByNickname(requestDto.getNickname());
+        if (nicknameCheck.isPresent()){
+            throw new RestApiException(UserStatusCode.OVERLAPPED_NICKNAME);
+        }
 
         String password = passwordEncoder.encode(requestDto.getPassword());
 
@@ -46,7 +52,7 @@ public class UserService {
     }
 
     @Transactional
-    public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public tempLoginResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
 
@@ -54,30 +60,15 @@ public class UserService {
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new RestApiException(UserStatusCode.NO_USER)
         );
+        if(user.getDeleted()){
+            throw  new RestApiException(UserStatusCode.DELETE_USER);
+        }
+
         // 비밀번호 확인
         if(!passwordEncoder.matches(password, user.getPassword())){
             throw  new RestApiException(UserStatusCode.WRONG_PASSWORD);
         }
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
+        return new tempLoginResponseDto(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
     }
-
-
-//
-//    @Transactional
-//    public ResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
-//        String username = loginRequestDto.getUsername();
-//        String password = loginRequestDto.getPassword();
-//
-//        // 사용자 확인
-//        User user = userRepository.findByUsername(username).orElseThrow(
-//                () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
-//        );
-//        // 비밀번호 확인
-//        if(!user.getPassword().equals(password)){
-//            throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-//        }
-//
-//        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getNickname()));
-//        return new ResponseDto("로그인 성공", HttpStatus.OK.value());
-//    }
 }

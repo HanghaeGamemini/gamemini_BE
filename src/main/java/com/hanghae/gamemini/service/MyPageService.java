@@ -1,7 +1,5 @@
 package com.hanghae.gamemini.service;
 
-
-import com.hanghae.gamemini.S3.S3Uploader;
 import com.hanghae.gamemini.dto.*;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
@@ -13,25 +11,19 @@ import com.hanghae.gamemini.repository.CommentRepository;
 import com.hanghae.gamemini.repository.LikeRepository;
 import com.hanghae.gamemini.repository.PostRepository;
 import com.hanghae.gamemini.repository.UserRepository;
+import com.hanghae.gamemini.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.data.domain.Pageable;
 
-import java.nio.file.Path;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -40,15 +32,13 @@ public class MyPageService {
 
     private final UserRepository userRepository;
 
-    private final S3Uploader s3Uploader;
+
+    private final CommentRepository commentRepository;
+
+    private final PostRepository postRepository;
 
 
-    @Value("${part.upload.path}")
-    private String uploadPath;
-    public final PostRepository postRepository;
-    public final CommentRepository commentRepository;
-
-    public final LikeRepository likeRepository;
+    private final LikeRepository likeRepository;
 
     //내가 작성한 게시글 찾기
     @Transactional
@@ -85,7 +75,7 @@ public class MyPageService {
         }
 
         for (Likes likes : likesList) {
-            Long post_id = likes.getPost().getId(); //좋아요한 게시글의 아이디값 얻기
+            Long post_id = likes.getPostId(); //좋아요한 게시글의 아이디값 얻기
             Post post = postRepository.findById(post_id).orElseThrow( //게시글이 있는지 확인
                     () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
             );
@@ -119,7 +109,27 @@ public class MyPageService {
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, commentResponseDtos), HttpStatus.OK);
     }
 
-}
+    @Transactional
+    public UpdateProfileResponseDto updateProfile(UpdateProfileRequestDto requestDto) {
+        User user = SecurityUtil.getCurrentUser();
+        user.nicknameUpdate(requestDto.getNickname());
+        userRepository.save(user);
 
+        return new UpdateProfileResponseDto(user);
+    }
+
+    @Transactional
+    public void deleteUser() {
+        User user = SecurityUtil.getCurrentUser();
+//        //작성한 댓글 닉네임처리 추후 다른 방법으로 교체 후 삭제
+//        List<Comment> comments = commentRepository.findAllByNickname(user.getNickname());
+//        for(Comment comment : comments){
+//            comment.deletedUpdate();
+//        }
+        user.deleteUser();
+        userRepository.save(user);
+    }
+
+}
 
 

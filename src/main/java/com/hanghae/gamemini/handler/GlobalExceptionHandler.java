@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -40,7 +41,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                     .statusMsg(e.getMessage())
                     .build());
      }
-     
+     // MissingServletRequestPartException 에러 핸들링
+     @ExceptionHandler (IllegalStateException.class)
+     public ResponseEntity<Object> missingServletRequestPartException(IllegalStateException e) {
+          log.warn("missingServletRequestPartException", e);
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+               .body(ErrorResponseDto.builder()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .statusMsg(e.getMessage())
+                    .build());
+     }
      // IllegalArgumentException 에러 핸들링
      @ExceptionHandler(IllegalArgumentException.class)
      public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException e) {
@@ -76,6 +86,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
           System.out.println(e.getMessage());
           return handleExceptionInternal(statusCode, interpolatedMessage);
      }
+     
+     
      
      // 그외 에러들 핸들링
      @ExceptionHandler({Exception.class})

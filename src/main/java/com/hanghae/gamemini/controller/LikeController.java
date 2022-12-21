@@ -20,6 +20,4 @@ public class LikeController {
     public ResponseEntity<PrivateResponseBody> PostLike(@PathVariable Long postId){
         return likeService.PostLike(postId);
     }
-
-
 }

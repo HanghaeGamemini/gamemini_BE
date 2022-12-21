@@ -43,19 +43,14 @@ public class UserController {
      public String login(@AuthenticationPrincipal UserDetails userDetails)
       */
 
-
-
 //     @PostMapping ("/login")
 //     public ResponseDto login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
 //          return userService.login(loginRequestDto, response);
 //     }
-
-     
      
      @PostMapping ("/login")
      public ResponseEntity<PrivateResponseBody> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
           System.out.println("longcontroller");
-          userService.login(loginRequestDto, response);
-          return new ResponseEntity<>(new PrivateResponseBody(UserStatusCode.USER_LOGIN_SUCCESS), HttpStatus.OK);
+          return new ResponseEntity<>(new PrivateResponseBody(UserStatusCode.USER_LOGIN_SUCCESS, userService.login(loginRequestDto, response)), HttpStatus.OK);
      }
 }
