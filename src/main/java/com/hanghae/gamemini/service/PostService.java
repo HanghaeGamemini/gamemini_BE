@@ -6,8 +6,10 @@ import com.hanghae.gamemini.dto.PostResponseDto;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.errorcode.UserStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
+import com.hanghae.gamemini.model.Comment;
 import com.hanghae.gamemini.model.Post;
 import com.hanghae.gamemini.model.User;
+import com.hanghae.gamemini.repository.CommentRepository;
 import com.hanghae.gamemini.repository.LikeRepository;
 import com.hanghae.gamemini.repository.PostRepository;
 import com.hanghae.gamemini.repository.UserRepository;
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+     private final CommentRepository commentRepository;
      private final UserRepository userRepository;
      
      private final S3Uploader s3Uploader;
@@ -93,6 +96,8 @@ public class PostService {
           if (user != null) {
                isLike = likeRepository.existsByUserAndPost(user, post);
           }
+          List<Comment> commentList = commentRepository.findAllByPostIdOrderByCreatedDesc(post.getId());
+          post.setComments(commentList);
           return new PostResponseDto.DetailResponse(post, isLike, author);
      }
      
@@ -113,7 +118,7 @@ public class PostService {
                () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
           // 해당게시글작성자가 현재유저가 아닌 경우
-          if (post.getUsername().equals(user.getUsername())){
+          if (!post.getUsername().equals(user.getUsername())){
                throw new RestApiException(CommonStatusCode.INVALID_USER);
           }
           

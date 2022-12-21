@@ -72,7 +72,6 @@ public class PostResponseDto {
             this.content = post.getContent();
             this.imgUrl = post.getImgUrl();
             this.nickName = author.getNickname();
-            //Todo N+1 해결하기
             this.commentList = post.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
             this.isLike = isLike;
             this.likes = post.getLikes(); // 수정필요

@@ -40,7 +40,6 @@ public class UserService {
             throw new RestApiException(UserStatusCode.OVERLAPPED_USERNAME);
         }
 
-
         String password = passwordEncoder.encode(requestDto.getPassword());
 
         userRepository.save(new User(requestDto, password));
