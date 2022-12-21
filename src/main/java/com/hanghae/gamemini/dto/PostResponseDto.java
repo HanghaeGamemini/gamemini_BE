@@ -12,6 +12,13 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 public class PostResponseDto {
+
+    private String username;
+
+
+    public PostResponseDto(Post post){
+        this.username = post.getUsername();
+    }
     
     @Getter
     @AllArgsConstructor
@@ -35,7 +42,20 @@ public class PostResponseDto {
         private LocalDateTime CreatedAt;
         private LocalDateTime ModifiedAt;
     
-        public AllPostResponseDto(Post post, boolean isLike, String nickName) {
+        public AllPostResponseDto(Post post, boolean isLike, User author) {
+            this.id = post.getId();
+            this.title = post.getTitle();
+            this.content = post.getContent();
+            this.imgUrl = post.getImgUrl();
+            this.nickName = author.getDeleted() ? "탈퇴한유저" : author.getNickname();
+            this.isLike = isLike;
+            this.likes = post.getLikes(); // 수정필요
+            this.commentsNum = post.getComments().size();  // todo n+1 없도록 수정필요 groupby
+            this.CreatedAt = post.getCreatedAt();
+            this.ModifiedAt = post.getModifiedAt();
+        }
+
+        public AllPostResponseDto(Post post) {
             this.id = post.getId();
             this.title = post.getTitle();
             this.content = post.getContent();
@@ -43,7 +63,7 @@ public class PostResponseDto {
             this.nickName = nickName;
             this.isLike = isLike;
             this.likes = post.getLikes(); // 수정필요
-            this.commentsNum = post.getComments().size();  // todo n+1 없도록 수정필요 groupby
+            this.commentsNum = post.getComments().size();
             this.CreatedAt = post.getCreatedAt();
             this.ModifiedAt = post.getModifiedAt();
         }
@@ -64,14 +84,14 @@ public class PostResponseDto {
         private int likes;
         private LocalDateTime CreatedAt;
         private LocalDateTime ModifiedAt;
-    
+
         public DetailResponse(Post post, boolean isLike,User author) {
             this.id = post.getId();
             this.profileUrl = author.getProfileUrl();
             this.title = post.getTitle();
             this.content = post.getContent();
             this.imgUrl = post.getImgUrl();
-            this.nickName = author.getNickname();
+            this.nickName = author.getDeleted() ? "탈퇴한유저" : author.getNickname();
             this.commentList = post.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
             this.isLike = isLike;
             this.likes = post.getLikes(); // 수정필요

@@ -25,6 +25,9 @@ public class Comment extends Timestamped{
     @Transient
     private String nickname;
 
+    @Column(nullable = false)
+    private boolean deleted;
+
     public Comment(User user, Post post, CommentRequestDto requestDto) {
         this.username = user.getUsername();
         this.nickname = user.getNickname();
@@ -41,4 +44,7 @@ public class Comment extends Timestamped{
     }
 
 
+    public void deletedUpdate() {
+        this.deleted = true;
+    }
 }

@@ -22,7 +22,8 @@ public enum CommonStatusCode implements StatusCode {
      INTERNAL_SERVER_ERROR("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR.value()),
      NO_ARTICLE("게시글이 존재하지 않습니다", HttpStatus.NOT_FOUND.value()),
      NO_COMMENT("댓글이 존재하지 않습니다.", HttpStatus.NOT_FOUND.value()),
-     INVALID_USER("작성자만 삭제/수정할 수 있습니다.", HttpStatus.BAD_REQUEST.value());
+     INVALID_USER("작성자만 삭제/수정할 수 있습니다.", HttpStatus.BAD_REQUEST.value()),
+     DELETE_USER(true, "회원 탈퇴 성공", HttpStatus.OK.value());
      
      private boolean success = false;
      private final String StatusMsg;
