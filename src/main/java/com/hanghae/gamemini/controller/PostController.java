@@ -5,13 +5,11 @@ import com.hanghae.gamemini.dto.PostRequestDto;
 import com.hanghae.gamemini.dto.PostResponseDto;
 import com.hanghae.gamemini.dto.PrivateResponseBody;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
-import com.hanghae.gamemini.security.UserDetailsImpl;
 import com.hanghae.gamemini.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

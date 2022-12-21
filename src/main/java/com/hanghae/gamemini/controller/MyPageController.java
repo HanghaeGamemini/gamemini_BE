@@ -38,6 +38,7 @@ public class MyPageController {
         return myPageService.getMyLikePost(userDetails.getUser(),page, size);
     }
     //내가 작성한 댓글 불러오기
+
     @GetMapping("/mypost/comment")
     public ResponseEntity<?> getMyComment(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                          @RequestParam(value = "page",defaultValue = "1") int page,

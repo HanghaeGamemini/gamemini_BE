@@ -24,6 +24,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
     List<Post> findAllByUsername(String username);
 
+    //게시글과 like 연관짓
+
 
     @Query(nativeQuery = true,
             value = "Select p.* from post p join users u on p.username = u.username "
