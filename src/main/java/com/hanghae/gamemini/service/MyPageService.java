@@ -55,13 +55,13 @@ public class MyPageService {
 
     public ResponseEntity<?> getMyPost(User user, int page , int size) {
         Pageable pageable = PageRequest.of(page,size);
-         postRepository.findAllByOrderByCreatedAtDesc(pageable);
+         postRepository.findAllByOrderByCreatedAtDesc(pageable); //페이징 처리
         List<Post> posts = postRepository.findAllByUsername(user.getUsername());
 
         List<PostResponseDto.AllPostResponseDto> allPostResponseDtos = new ArrayList<>();
 
-        if (posts.isEmpty()) {
-            return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.NO_COMMENT), HttpStatus.OK);
+        if (posts.isEmpty()) { //작성한 게시글이 없는 경우
+            return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.NO_ARTICLE), HttpStatus.NOT_FOUND);
         }
         for (Post post : posts) {
             //post를 하나씩 하나씩 빼서 ENTITY로 리턴
@@ -75,11 +75,14 @@ public class MyPageService {
     //내가 좋아요한 게시글 불러오기
     @Transactional
     public ResponseEntity<PrivateResponseBody> getMyLikePost(User user, int page, int size) {
-        List<Likes> likesList = likeRepository.findByUserId(user.getId()); //좋아요가 있는지 확인
         Pageable pageable = PageRequest.of(page,size);
         postRepository.findAllByOrderByCreatedAtDesc(pageable);
-
+        List<Likes> likesList = likeRepository.findByUserId(user.getId()); //좋아요가 있는지 확인
         List<PostResponseDto.AllPostResponseDto> allPostResponseDtos = new ArrayList<>();
+
+        if (likesList.isEmpty()){//좋아요한 게시글이 없는 경우
+            return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.NO_ARTICLE),HttpStatus.NOT_FOUND);
+        }
 
         for (Likes likes : likesList) {
             Long post_id = likes.getPost().getId(); //좋아요한 게시글의 아이디값 얻기

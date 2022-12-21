@@ -75,7 +75,7 @@ public class PostService {
      @Transactional
      public void createPost(PostRequestDto postRequestDto) {
           User user = SecurityUtil.getCurrentUser();
-          postRepository.saveAndFlush(new Post(postRequestDto, user.getUsername()));
+          postRepository.save(new Post(postRequestDto, user.getUsername()));
      }
 
      //게시글 수정
