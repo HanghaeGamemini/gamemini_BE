@@ -42,12 +42,12 @@ public class PostResponseDto {
         private LocalDateTime CreatedAt;
         private LocalDateTime ModifiedAt;
     
-        public AllPostResponseDto(Post post, boolean isLike, String nickName) {
+        public AllPostResponseDto(Post post, boolean isLike, User author) {
             this.id = post.getId();
             this.title = post.getTitle();
             this.content = post.getContent();
             this.imgUrl = post.getImgUrl();
-            this.nickName = nickName;
+            this.nickName = author.getDeleted() ? "탈퇴한유저" : author.getNickname();
             this.isLike = isLike;
             this.likes = post.getLikes(); // 수정필요
             this.commentsNum = post.getComments().size();  // todo n+1 없도록 수정필요 groupby
@@ -84,14 +84,14 @@ public class PostResponseDto {
         private int likes;
         private LocalDateTime CreatedAt;
         private LocalDateTime ModifiedAt;
-    
+
         public DetailResponse(Post post, boolean isLike,User author) {
             this.id = post.getId();
             this.profileUrl = author.getProfileUrl();
             this.title = post.getTitle();
             this.content = post.getContent();
             this.imgUrl = post.getImgUrl();
-            this.nickName = author.getNickname();
+            this.nickName = author.getDeleted() ? "탈퇴한유저" : author.getNickname();
             this.commentList = post.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
             this.isLike = isLike;
             this.likes = post.getLikes(); // 수정필요

@@ -9,11 +9,13 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
+
     List<Comment> findAllByUsername(String username);
 
 
      @Query(value = "select t.*, u.nickname from comment t join users u on t.username = u.username\n" +
           "where t.username not like '삭제된유저' order by t.created_at desc", nativeQuery = true)
      List<CommentNicknameInterface> findAllByPostIdOrderByCreatedDesc(long id);
+
 
 }
