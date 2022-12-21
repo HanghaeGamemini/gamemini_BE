@@ -71,5 +71,8 @@ public class Post extends Timestamped {
         this.likes -= 1;
     }
 
+    public void setComments(List<Comment> comments){
+        this.comments = comments;
+    }
 
 }

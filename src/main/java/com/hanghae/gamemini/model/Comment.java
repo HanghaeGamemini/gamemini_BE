@@ -22,9 +22,12 @@ public class Comment extends Timestamped{
     private Post post;
     @Column
     private String username;
+    
+    private String nickname;
 
-    public Comment(String username, Post post, CommentRequestDto requestDto) {
-        this.username = username;
+    public Comment(User user, Post post, CommentRequestDto requestDto) {
+        this.username = user.getUsername();
+        this.nickname = user.getNickname();
         this.post = post;
         this.content = requestDto.getContent();
     }

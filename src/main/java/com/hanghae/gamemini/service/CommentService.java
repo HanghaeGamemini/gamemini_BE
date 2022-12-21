@@ -29,7 +29,7 @@ public class CommentService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
         );
-        Comment save = new Comment(SecurityUtil.getCurrentUser().getUsername(), post, requestDto);
+        Comment save = new Comment(SecurityUtil.getCurrentUser(), post, requestDto);
         commentRepository.saveAndFlush(save);
 
         return ResponseEntity.ok(new CommentResponseDto(save));
