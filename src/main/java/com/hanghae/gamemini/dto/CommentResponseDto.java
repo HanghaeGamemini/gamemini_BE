@@ -1,6 +1,7 @@
 package com.hanghae.gamemini.dto;
 
 import com.hanghae.gamemini.model.Comment;
+import com.hanghae.gamemini.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,14 +17,23 @@ public class CommentResponseDto {
     private LocalDateTime CreatedAt;
     private LocalDateTime ModifiedAt;
 
-    public CommentResponseDto(Comment comment) {
+    public CommentResponseDto(Comment comment, User user) {
         this.id = comment.getId();
-//        this.nickname = comment.getUser().getNickname();
+        this.nickname = comment.isDeleted() ? "탈퇴한유저" : comment.getNickname();
 //        this.profileUrl =
         this.content = comment.getContent();
+
         CreatedAt = comment.getCreatedAt();
         ModifiedAt = comment.getModifiedAt();
     }
 
 
+    public CommentResponseDto(Comment comment) {
+        this.id = comment.getId();
+//        this.profileUrl =
+        this.content = comment.getContent();
+        this.nickname = comment.getNickname();
+        CreatedAt = comment.getCreatedAt();
+        ModifiedAt = comment.getModifiedAt();
+    }
 }

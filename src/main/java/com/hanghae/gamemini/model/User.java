@@ -25,7 +25,7 @@ public class User {
      @Column(nullable = false)
      private String password;
 
-     @Column(nullable = false)
+     @Column(nullable = false, unique = true)
      private String nickname;
      
      @Column
@@ -38,11 +38,16 @@ public class User {
           this.username = requestDto.getUsername();
           this.password = password;
           this.nickname = requestDto.getNickname();
+          this.deleted = false;
      }
 
 
 
      public void nicknameUpdate(String nickname) {
           this.nickname = nickname;
+     }
+
+     public void deleteUser() {
+          this.deleted = true;
      }
 }

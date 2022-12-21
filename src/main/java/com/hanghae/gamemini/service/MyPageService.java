@@ -2,9 +2,9 @@ package com.hanghae.gamemini.service;
 
 import com.hanghae.gamemini.dto.UpdateProfileRequestDto;
 import com.hanghae.gamemini.dto.UpdateProfileResponseDto;
-import com.hanghae.gamemini.model.Post;
+import com.hanghae.gamemini.model.Comment;
 import com.hanghae.gamemini.model.User;
-import com.hanghae.gamemini.repository.PostRepository;
+import com.hanghae.gamemini.repository.CommentRepository;
 import com.hanghae.gamemini.repository.UserRepository;
 import com.hanghae.gamemini.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,8 @@ public class MyPageService {
 
     private final UserRepository userRepository;
 
-    private final PostRepository postRepository;
+
+    private final CommentRepository commentRepository;
 
     @Transactional
     public UpdateProfileResponseDto updateProfile(UpdateProfileRequestDto requestDto) {
@@ -33,12 +34,13 @@ public class MyPageService {
     @Transactional
     public void deleteUser() {
         User user = SecurityUtil.getCurrentUser();
-        userRepository.deleteById(user.getId());
-        List<Post> posts = postRepository.findAllByUsername(user.getUsername());
-        for(Post post : posts){
-            post.nicknameUpdate();
+        //작성한 댓글 닉네임처리 추후 다른 방법으로 교체 후 삭제
+        List<Comment> comments = commentRepository.findAllByNickname(user.getNickname());
+        for(Comment comment : comments){
+            comment.deletedUpdate();
         }
 
-
+        user.deleteUser();
+        userRepository.save(user);
     }
 }

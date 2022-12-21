@@ -4,10 +4,10 @@ import com.hanghae.gamemini.S3.S3Uploader;
 import com.hanghae.gamemini.dto.PostRequestDto;
 import com.hanghae.gamemini.dto.PostResponseDto;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
-import com.hanghae.gamemini.errorcode.UserStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
 import com.hanghae.gamemini.model.Post;
 import com.hanghae.gamemini.model.User;
+import com.hanghae.gamemini.repository.CommentRepository;
 import com.hanghae.gamemini.repository.LikeRepository;
 import com.hanghae.gamemini.repository.PostRepository;
 import com.hanghae.gamemini.repository.UserRepository;
@@ -44,6 +44,8 @@ public class PostService {
      private final PostRepository postRepository;
      
      private final LikeRepository likeRepository;
+
+     private final CommentRepository commentRepository;
      
      //전체글 조회
      @Transactional (readOnly = true)
@@ -51,8 +53,11 @@ public class PostService {
           User user = SecurityUtil.getCurrentUser();// 비회원일경우 null
           Pageable pageable = PageRequest.of(page, size); // page : zero-based page index, size : the size of the page to be returned,
           // pageable 적용, 생성일 기준 내림차순하여 findAll
-          return postRepository.findAllByOrderByCreatedAtDesc(pageable).stream()
+          return postRepository.findAllByDeletedIsFalseOrderByCreatedAtDesc(pageable).stream()
                .map(post -> {
+                    if(!post.getDeleted()){
+
+                    }
                     boolean isLike = false;
                     // user login한 경우
                     if (user != null) {
@@ -62,7 +67,7 @@ public class PostService {
                     // 해당 게시글 저자 확인
                     User author = userRepository.findByUsername(post.getUsername()).orElse(new User());
                     // 탈퇴한경우 > nickname 수정필요
-                    return new PostResponseDto.AllPostResponseDto(post, isLike, author.getNickname());
+                    return new PostResponseDto.AllPostResponseDto(post, isLike, author);
                })
                .collect(Collectors.toList());
      }
@@ -72,14 +77,12 @@ public class PostService {
      public PostResponseDto.DetailResponse detailPost(Long id) {
           User user = SecurityUtil.getCurrentUser();// 비회원일경우 null
           // 포스트 유무 확인
-          Post post = postRepository.findByIdAndDeletedIsNull(id).orElseThrow(
+          Post post = postRepository.findByIdAndDeletedIsFalse(id).orElseThrow(
                // 삭제 or 존재하지않는 글일경우
                () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
           // 해당 게시글을 작성한 user find
-          User author = userRepository.findByUsername(post.getUsername()).orElseThrow(
-               () -> new RestApiException(UserStatusCode.NO_USER)
-          );
+          User author = userRepository.findByUsername(post.getUsername()).orElse(new User());
           boolean isLike = false;
           // user login한 경우
           if (user != null) {
@@ -122,7 +125,7 @@ public class PostService {
           );
           if (post.getUsername().equals(user.getUsername())) {
 //               postRepository.deleteById(id);
-               postRepository.deleteById(id);
+               postRepository.updatePostDeleted(id);
           } else {
                throw new RestApiException(CommonStatusCode.INVALID_USER);
           }

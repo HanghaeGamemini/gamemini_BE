@@ -74,7 +74,7 @@ public class Post extends Timestamped {
     }
 
 
-    public void nicknameUpdate() {
+    public void deletePost() {
         this.deleted = true;
     }
 }

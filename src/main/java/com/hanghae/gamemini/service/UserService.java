@@ -39,8 +39,10 @@ public class UserService {
         if (found.isPresent()){
             throw new RestApiException(UserStatusCode.OVERLAPPED_USERNAME);
         }
-
-
+        Optional<User> nicknameCheck = userRepository.findByNickname(requestDto.getNickname());
+        if (nicknameCheck.isPresent()){
+            throw new RestApiException(UserStatusCode.OVERLAPPED_NICKNAME);
+        }
         String password = passwordEncoder.encode(requestDto.getPassword());
 
         userRepository.save(new User(requestDto, password));
@@ -55,6 +57,10 @@ public class UserService {
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new RestApiException(UserStatusCode.NO_USER)
         );
+        if(user.getDeleted()){
+            throw  new RestApiException(UserStatusCode.DELETE_USER);
+        }
+
         // 비밀번호 확인
         if(!passwordEncoder.matches(password, user.getPassword())){
             throw  new RestApiException(UserStatusCode.WRONG_PASSWORD);

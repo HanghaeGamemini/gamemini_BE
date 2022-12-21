@@ -21,13 +21,19 @@ public class Comment extends Timestamped{
     @JoinColumn(name="post_id")
     private Post post;
     @Column
-    private String username;
+    private String nickname;
 
-    public Comment(String username, Post post, CommentRequestDto requestDto) {
-        this.username = username;
+    @Column(nullable = false)
+    private boolean deleted;
+
+    public Comment(String nickname, Post post, CommentRequestDto requestDto) {
+        this.nickname = nickname;
         this.post = post;
         this.content = requestDto.getContent();
     }
 
 
+    public void deletedUpdate() {
+        this.deleted = true;
+    }
 }
