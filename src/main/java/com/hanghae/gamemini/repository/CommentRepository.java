@@ -1,15 +1,10 @@
 package com.hanghae.gamemini.repository;
 
 import com.hanghae.gamemini.model.Comment;
-
 import com.hanghae.gamemini.model.CommentNicknameInterface;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
-
-import javax.persistence.Id;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
