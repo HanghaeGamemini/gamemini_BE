@@ -97,31 +97,12 @@ public class PostService {
           User author = userRepository.findByUsername(post.getUsername()).orElseThrow(
                () -> new RestApiException(UserStatusCode.NO_USER)
           );
-<<<<<<< HEAD
+
           boolean isLike = false;
           // user login한 경우
           if (user != null) {
                isLike = likeRepository.existsByUserAndPost(user, post);
-=======
-          boolean isLike = likeRepository.existsByUserAndPost(SecurityUtil.getCurrentUser(), post);
-          return new PostResponseDto.DetailResponse(post, isLike, user);
-     }
-     //게시글 작성
-     @Transactional
-     public void createPost(PostRequestDto postRequestDto) {
-          User user = SecurityUtil.getCurrentUser();
-          postRepository.save(new Post(postRequestDto, user.getUsername()));
-     }
 
-     //게시글 수정
-     public String updatePost(Long id, PostRequestDto postRequestDto, User user) {
-          Post post = postRepository.findById(id).orElseThrow(
-                  () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
-          );
-          if(post.getUsername().equals(user.getUsername())){
-               post.update(postRequestDto);
-
->>>>>>> suyess
           }
           List<CommentNicknameInterface> commentNicknameList = commentRepository.findAllByPostIdOrderByCreatedDesc(post.getId());
 
