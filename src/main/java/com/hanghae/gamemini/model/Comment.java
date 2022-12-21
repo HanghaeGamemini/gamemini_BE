@@ -36,11 +36,12 @@ public class Comment extends Timestamped{
     }
     
     public Comment(CommentNicknameInterface commentNicknameInterface){
-        this.id = commentNicknameInterface.getCommentId();
+        this.id = commentNicknameInterface.getId();
         this.content = commentNicknameInterface.getContent();
         this.username = commentNicknameInterface.getUsername();
         this.nickname = commentNicknameInterface.getNickname();
         this.setCreatedAt(commentNicknameInterface.getCreated_at());
+        this.setModifiedAt(commentNicknameInterface.getModified_at());
     }
 
 

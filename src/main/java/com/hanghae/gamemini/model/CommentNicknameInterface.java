@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public interface CommentNicknameInterface {
      
-     Long getCommentId();
+     Long getId();
      String getContent();
      Long getPostId();
      String getUsername();
@@ -12,5 +12,6 @@ public interface CommentNicknameInterface {
      String getNickname();
      
      LocalDateTime getCreated_at();
+     LocalDateTime getModified_at();
      
 }
