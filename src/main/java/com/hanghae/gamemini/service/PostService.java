@@ -30,7 +30,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -57,12 +56,13 @@ public class PostService {
           User user = SecurityUtil.getCurrentUser();// 비회원일경우 null
           Pageable pageable = PageRequest.of(page, size); // page : zero-based page index, size : the size of the page to be returned,
           // pageable 적용, 생성일 기준 내림차순하여 findAll
-          Page<Post> postList ;
+          Page<Post> postList;
           switch(searchBy){
-//               case "content": postList = postRepository.findAllByAndDeletedIsNullOrderByCreatedAtDesc(search, pageable); break;
+               case "content": postList = postRepository.findAllByContentContainingAndDeletedIsNullOrderByCreatedAtDesc(search, pageable); break;
+               case "title": postList =  postRepository.findAllByTitleContainingAndDeletedIsNullOrderByCreatedAtDesc(search, pageable); break;
+               case "nickname": postList = postRepository.findAllByUsername(search, pageable); break;
+               default : postList = postRepository.findAllByAndDeletedIsNullOrderByCreatedAtDesc(pageable);
           }
-          postList = postRepository.findAllByAndDeletedIsNullOrderByCreatedAtDesc(pageable);
-          log.info(">>>>>>>>>>>>>getTotalPages : {}", postList.getTotalPages());
           
           List<PostResponseDto.AllPostResponseDto> data = postList.stream()
                .map(post -> {

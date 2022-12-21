@@ -28,10 +28,12 @@ public class PostController {
     //전체조회
     @GetMapping
     public ResponseEntity<PrivateResponseBody> getPost(
+         @RequestParam(value="search", defaultValue = "") String search,
+         @RequestParam(value="searchBy", defaultValue = "") String searchBy,
          @RequestParam(value = "page", defaultValue = "1") int page,
          @RequestParam(value="size", defaultValue = "8") int size
     ){
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.getPost(page-1, size)), HttpStatus.OK);
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, postService.getPost(search, searchBy, page-1, size)), HttpStatus.OK);
     }
 
     //선택조회
@@ -49,24 +51,13 @@ public class PostController {
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.CREATE_POST, postService.createPost(requestDto, multipartFile)), HttpStatus.OK);
     }
     
-    // 서버에 이미지 저장ver
-    @PostMapping("/post2")
-    public ResponseEntity<PrivateResponseBody> createPost2(
-         @RequestPart PostRequestDto postRequestDto,
-         @RequestPart(value="file", required = false) MultipartFile multipartFile,
-         HttpServletRequest request){  // 필요없을지도
-        String realPath = request.getSession().getServletContext().getRealPath("/");
-        log.info("realPath : {}", realPath);
-        postService.createPost2(postRequestDto , multipartFile, realPath);  // 필요없을지도
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK), HttpStatus.OK);
-    }
+    // 게시글 수정페이지 불러오기
     @GetMapping("/update/{id}")
     public ResponseEntity<PrivateResponseBody> updatePost(
          @PathVariable Long id){
         PostResponseDto.getUpdateResponse responseDto = postService.getUpdatePost(id);
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, responseDto), HttpStatus.OK);
     }
-    
 
     //게시글 수정
     @PutMapping("/{id}")
