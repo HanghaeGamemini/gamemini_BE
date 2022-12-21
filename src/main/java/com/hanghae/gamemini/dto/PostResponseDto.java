@@ -14,6 +14,13 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 public class PostResponseDto {
+
+    private String username;
+
+
+    public PostResponseDto(Post post){
+        this.username = post.getUsername();
+    }
     
     @Getter
     @NoArgsConstructor
@@ -38,6 +45,19 @@ public class PostResponseDto {
             this.isLike = isLike;
             this.likes = post.getLikes(); // 수정필요
             this.commentsNum = post.getComments().size();  // todo n+1 없도록 수정필요 groupby
+            this.CreatedAt = post.getCreatedAt();
+            this.ModifiedAt = post.getModifiedAt();
+        }
+
+        public AllPostResponseDto(Post post) {
+            this.id = post.getId();
+            this.title = post.getTitle();
+            this.content = post.getContent();
+            this.imgUrl = post.getImgUrl();
+            this.nickName = nickName;
+            this.isLike = isLike;
+            this.likes = post.getLikes(); // 수정필요
+            this.commentsNum = post.getComments().size();
             this.CreatedAt = post.getCreatedAt();
             this.ModifiedAt = post.getModifiedAt();
         }

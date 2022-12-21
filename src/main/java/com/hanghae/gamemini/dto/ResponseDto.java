@@ -1,5 +1,6 @@
 package com.hanghae.gamemini.dto;
 
+import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,4 +17,5 @@ public class ResponseDto {
         this.statusCode = statusCode;
         this.success = true;
     }
+
 }

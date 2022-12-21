@@ -2,7 +2,6 @@ package com.hanghae.gamemini.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
 import javax.persistence.*;
 import java.util.function.Supplier;
 
