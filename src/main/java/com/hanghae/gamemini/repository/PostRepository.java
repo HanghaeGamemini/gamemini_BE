@@ -13,6 +13,11 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
     
     List<Post> findAllByAndDeletedIsNullOrderByCreatedAtDesc(Pageable pageable);
+
+//    @Query ("select * from ")
+
+
+    List<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
     
     @Modifying
     @Query ("Update Post p Set p.deleted = true where p.id = :id")

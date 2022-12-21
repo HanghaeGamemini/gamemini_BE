@@ -34,7 +34,7 @@ public class PostResponseDto {
             this.title = post.getTitle();
             this.content = post.getContent();
             this.imgUrl = post.getImgUrl();
-            this.nickName = nickName;
+            this.nickName = post.getDeleted() ? "탈퇴한유저" : nickName;
             this.isLike = isLike;
             this.likes = post.getLikes(); // 수정필요
             this.commentsNum = post.getComments().size();  // todo n+1 없도록 수정필요 groupby

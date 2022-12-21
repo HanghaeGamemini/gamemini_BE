@@ -46,6 +46,7 @@ public class Post extends Timestamped {
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
         this.username = username;
+        this.deleted = false;
     }
 
     // img 있는경우
@@ -54,6 +55,7 @@ public class Post extends Timestamped {
         this.content = postRequestDto.getContent();
         this.username = username;
         this.imgUrl = imgUrl;
+        this.deleted = false;
     }
 
 
@@ -72,8 +74,7 @@ public class Post extends Timestamped {
     }
 
 
-    public void nicknameUpdate(String 탈퇴한사용자) {
-
-
+    public void nicknameUpdate() {
+        this.deleted = true;
     }
 }

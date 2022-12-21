@@ -51,18 +51,16 @@ public class PostService {
           User user = SecurityUtil.getCurrentUser();// 비회원일경우 null
           Pageable pageable = PageRequest.of(page, size); // page : zero-based page index, size : the size of the page to be returned,
           // pageable 적용, 생성일 기준 내림차순하여 findAll
-          return postRepository.findAllByAndDeletedIsNullOrderByCreatedAtDesc(pageable).stream()
+          return postRepository.findAllByOrderByCreatedAtDesc(pageable).stream()
                .map(post -> {
                     boolean isLike = false;
                     // user login한 경우
                     if (user != null) {
                          // 현재유저의 해당 게시글 좋아요 유무
-                         isLike = likeRepository.existsByUserAndPost(user, post);
+                         isLike = likeRepository.existsByUserIdAndPostId(user.getId(), post.getId());
                     }
                     // 해당 게시글 저자 확인
-                    User author = userRepository.findByUsername(post.getUsername()).orElseThrow(
-                         () -> new RestApiException(UserStatusCode.NO_USER)
-                    );
+                    User author = userRepository.findByUsername(post.getUsername()).orElse(new User());
                     // 탈퇴한경우 > nickname 수정필요
                     return new PostResponseDto.AllPostResponseDto(post, isLike, author.getNickname());
                })
@@ -85,7 +83,7 @@ public class PostService {
           boolean isLike = false;
           // user login한 경우
           if (user != null) {
-               isLike = likeRepository.existsByUserAndPost(user, post);
+               isLike = likeRepository.existsByUserIdAndPostId(user.getId(), post.getId());
           }
           return new PostResponseDto.DetailResponse(post, isLike, author);
      }
@@ -124,7 +122,7 @@ public class PostService {
           );
           if (post.getUsername().equals(user.getUsername())) {
 //               postRepository.deleteById(id);
-               postRepository.updatePostDeleted(id);
+               postRepository.deleteById(id);
           } else {
                throw new RestApiException(CommonStatusCode.INVALID_USER);
           }

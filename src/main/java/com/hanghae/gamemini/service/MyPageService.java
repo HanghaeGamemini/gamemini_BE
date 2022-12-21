@@ -30,12 +30,13 @@ public class MyPageService {
         return new UpdateProfileResponseDto(user);
     }
 
+    @Transactional
     public void deleteUser() {
         User user = SecurityUtil.getCurrentUser();
         userRepository.deleteById(user.getId());
         List<Post> posts = postRepository.findAllByUsername(user.getUsername());
         for(Post post : posts){
-            post.nicknameUpdate("탈퇴한사용자");
+            post.nicknameUpdate();
         }
 
 
