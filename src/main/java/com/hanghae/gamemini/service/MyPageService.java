@@ -119,48 +119,6 @@ public class MyPageService {
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, commentResponseDtos), HttpStatus.OK);
     }
 
-
-    //프로필 변경하기
-
-    public String updateProfile(MultipartFile multipartFile, String realPath){
-    //파일이 없을 경우
-        if(multipartFile.isEmpty()) return null;
-        //이미지 형식이 아닐경우
-        if(multipartFile.getContentType() == null || !(multipartFile.getContentType().equals("image/png")) ||
-                multipartFile.getContentType().equals("image/png"))
-        throw  new RestApiException(CommonStatusCode.WRONG_IMAGE_FORMAT);
-
-        String originalFileName = multipartFile.getOriginalFilename();
-        String newFileName = createFileName(multipartFile.getOriginalFilename()); //중복되지 않는 새 파일이름
-        log.info(" originalFileName : {}, newFileName : {}", originalFileName, newFileName);
-
-        String saveName = uploadPath + newFileName;
-        Path savePath = Paths.get(saveName); //파일의 저장경로를 정의함
-
-        try{
-            multipartFile.transferTo(savePath);
-        } catch (IOException e) {
-            log.info(""+e.getMessage());
-            log.info("");
-            e.printStackTrace();
-            throw new RestApiException(CommonStatusCode.FILE_SAVE_FAIL);
-        }
-        log.info("파일수정 완료");
-        return saveName;
-    }
-
-
-
-    private String createFileName(String fileName) {
-        return UUID.randomUUID().toString().concat("_"+ fileName);
-    }
-    private String getFileExtension(String fileName){
-        try{
-            return fileName.substring(fileName.lastIndexOf("."));
-        }catch (StringIndexOutOfBoundsException e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일("+fileName+")입니다");
-        }
-    }
 }
 
 

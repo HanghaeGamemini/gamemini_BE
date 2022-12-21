@@ -52,21 +52,6 @@ public class MyPageController {
         return myPageService.getMyComment(userDetails.getUser(),page, size);
 
     }
-
-
-
-    //포르필 변경하기
-    @PutMapping("/mypost/profile")
-    public ResponseEntity<PrivateResponseBody> updateProfile(@RequestPart(value = "file", required = false)MultipartFile multipartFile,
-                                                             HttpServletRequest request){
-        String realPath = request.getSession().getServletContext().getRealPath("/");
-        log.info("realPath : {}", realPath);
-        myPageService.updateProfile(multipartFile, realPath);
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK), HttpStatus.OK);
-
-    }
-
-
-
+    
 }
 
