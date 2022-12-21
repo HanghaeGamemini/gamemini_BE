@@ -2,9 +2,7 @@ package com.hanghae.gamemini.dto;
 
 import com.hanghae.gamemini.model.Post;
 import com.hanghae.gamemini.model.User;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +12,14 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 public class PostResponseDto {
+    
+    @Getter
+    @AllArgsConstructor
+    public static class AllPostResponseDtoWithTotalPage {
+        private int totalPage;
+        private List<AllPostResponseDto> postList;
+    }
+    
     
     @Getter
     @NoArgsConstructor
@@ -66,7 +72,6 @@ public class PostResponseDto {
             this.content = post.getContent();
             this.imgUrl = post.getImgUrl();
             this.nickName = author.getNickname();
-            //Todo N+1 해결하기
             this.commentList = post.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
             this.isLike = isLike;
             this.likes = post.getLikes(); // 수정필요

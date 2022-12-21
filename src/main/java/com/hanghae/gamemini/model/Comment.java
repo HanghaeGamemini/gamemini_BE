@@ -22,11 +22,22 @@ public class Comment extends Timestamped{
     private Post post;
     @Column
     private String username;
+    @Transient
+    private String nickname;
 
-    public Comment(String username, Post post, CommentRequestDto requestDto) {
-        this.username = username;
+    public Comment(User user, Post post, CommentRequestDto requestDto) {
+        this.username = user.getUsername();
+        this.nickname = user.getNickname();
         this.post = post;
         this.content = requestDto.getContent();
+    }
+    
+    public Comment(CommentNicknameInterface commentNicknameInterface){
+        this.id = commentNicknameInterface.getCommentId();
+        this.content = commentNicknameInterface.getContent();
+        this.username = commentNicknameInterface.getUsername();
+        this.nickname = commentNicknameInterface.getNickname();
+        this.setCreatedAt(commentNicknameInterface.getCreated_at());
     }
 
 
