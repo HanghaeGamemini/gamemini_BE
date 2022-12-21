@@ -115,7 +115,10 @@ public class PostService {
      @Transactional
      public PostResponseDto.createResponse createPost(PostRequestDto postRequestDto, MultipartFile file) {
           User user = SecurityUtil.getCurrentUser();
-          String imgUrl = s3Uploader.upload(file, "postImage");
+          String imgUrl = null;
+          if(file != null) {
+               imgUrl = s3Uploader.upload(file, "postImage");
+          }
           Post post = postRepository.saveAndFlush(new Post(postRequestDto, user.getUsername(), imgUrl));
           return new PostResponseDto.createResponse(post, user.getNickname());
      }

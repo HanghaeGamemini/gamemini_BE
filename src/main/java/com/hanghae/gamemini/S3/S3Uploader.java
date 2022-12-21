@@ -31,7 +31,6 @@ public class S3Uploader {
      private String bucket;
      
      public String upload(MultipartFile multipartFile, String dirName) {
-          if(multipartFile.getContentType() == null) return null;
           // MultipartFile을 File객체로 변환
           // 이미지형식이 아닐경우
           if (!(multipartFile.getContentType().equals("image/png") || multipartFile.getContentType().equals("image/jpeg")))
@@ -76,8 +75,6 @@ public class S3Uploader {
      }
      
      private Optional<File> convert(MultipartFile file) throws IOException {
-          log.info("original Filename: {}", file.getOriginalFilename());
-          log.info("Path + Filename: {}","tempImage/"+file.getOriginalFilename());
           File convertFile = new File("/media"+File.separator+file.getOriginalFilename()); // 이름겹치는 오류생길경우 여기부터 UUID 적용해도 될듯
           if(convertFile.createNewFile()) {
                try (FileOutputStream fos = new FileOutputStream(convertFile)) {
