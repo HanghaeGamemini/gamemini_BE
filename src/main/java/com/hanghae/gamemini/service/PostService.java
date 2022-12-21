@@ -7,6 +7,7 @@ import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.errorcode.UserStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
 import com.hanghae.gamemini.model.Comment;
+import com.hanghae.gamemini.model.CommentNicknameInterface;
 import com.hanghae.gamemini.model.Post;
 import com.hanghae.gamemini.model.User;
 import com.hanghae.gamemini.repository.CommentRepository;
@@ -29,6 +30,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -51,13 +53,17 @@ public class PostService {
      
      //전체글 조회
      @Transactional (readOnly = true)
-     public PostResponseDto.AllPostResponseDtoWithTotalPage getPost(int page, int size) {
+     public PostResponseDto.AllPostResponseDtoWithTotalPage getPost(String search, String searchBy, int page, int size) {
           User user = SecurityUtil.getCurrentUser();// 비회원일경우 null
           Pageable pageable = PageRequest.of(page, size); // page : zero-based page index, size : the size of the page to be returned,
           // pageable 적용, 생성일 기준 내림차순하여 findAll
-          Page<Post> postList = postRepository.findAllByAndDeletedIsNullOrderByCreatedAtDesc(pageable);
+          Page<Post> postList ;
+          switch(searchBy){
+//               case "content": postList = postRepository.findAllByAndDeletedIsNullOrderByCreatedAtDesc(search, pageable); break;
+          }
+          postList = postRepository.findAllByAndDeletedIsNullOrderByCreatedAtDesc(pageable);
           log.info(">>>>>>>>>>>>>getTotalPages : {}", postList.getTotalPages());
-     
+          
           List<PostResponseDto.AllPostResponseDto> data = postList.stream()
                .map(post -> {
                     boolean isLike = false;
@@ -96,7 +102,11 @@ public class PostService {
           if (user != null) {
                isLike = likeRepository.existsByUserAndPost(user, post);
           }
-          List<Comment> commentList = commentRepository.findAllByPostIdOrderByCreatedDesc(post.getId());
+          List<CommentNicknameInterface> commentNicknameList = commentRepository.findAllByPostIdOrderByCreatedDesc(post.getId());
+
+          List<Comment> commentList = commentNicknameList.stream()
+               .map(Comment::new).collect(Collectors.toList());
+          
           post.setComments(commentList);
           return new PostResponseDto.DetailResponse(post, isLike, author);
      }
@@ -118,7 +128,7 @@ public class PostService {
                () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
           // 해당게시글작성자가 현재유저가 아닌 경우
-          if (!post.getUsername().equals(user.getUsername())){
+          if (!post.getUsername().equals(user.getUsername())) {
                throw new RestApiException(CommonStatusCode.INVALID_USER);
           }
           
