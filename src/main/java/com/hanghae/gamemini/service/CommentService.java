@@ -42,8 +42,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new RestApiException(CommonStatusCode.NO_COMMENT)
         );
-
-        boolean usernameCheck = comment.getNickname().equals(SecurityUtil.getCurrentUser().getNickname());
+        boolean usernameCheck = comment.getUsername().equals(SecurityUtil.getCurrentUser().getUsername());
         if (usernameCheck) {
 //            commentRepository.updateCommentDeleted(commentId);
             commentRepository.deleteById(commentId);
