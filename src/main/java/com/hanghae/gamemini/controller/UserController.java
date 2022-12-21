@@ -43,14 +43,10 @@ public class UserController {
      public String login(@AuthenticationPrincipal UserDetails userDetails)
       */
 
-
-
 //     @PostMapping ("/login")
 //     public ResponseDto login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
 //          return userService.login(loginRequestDto, response);
 //     }
-
-     
      
      @PostMapping ("/login")
      public ResponseEntity<PrivateResponseBody> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {

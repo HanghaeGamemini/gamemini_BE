@@ -6,8 +6,11 @@ import com.hanghae.gamemini.dto.PostResponseDto;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.errorcode.UserStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
+import com.hanghae.gamemini.model.Comment;
+import com.hanghae.gamemini.model.CommentNicknameInterface;
 import com.hanghae.gamemini.model.Post;
 import com.hanghae.gamemini.model.User;
+import com.hanghae.gamemini.repository.CommentRepository;
 import com.hanghae.gamemini.repository.LikeRepository;
 import com.hanghae.gamemini.repository.PostRepository;
 import com.hanghae.gamemini.repository.UserRepository;
@@ -15,6 +18,7 @@ import com.hanghae.gamemini.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -34,6 +38,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+     private final CommentRepository commentRepository;
      private final UserRepository userRepository;
      
      private final S3Uploader s3Uploader;
@@ -47,11 +52,19 @@ public class PostService {
      
      //전체글 조회
      @Transactional (readOnly = true)
-     public List<PostResponseDto.AllPostResponseDto> getPost(int page, int size) {
+     public PostResponseDto.AllPostResponseDtoWithTotalPage getPost(String search, String searchBy, int page, int size) {
           User user = SecurityUtil.getCurrentUser();// 비회원일경우 null
           Pageable pageable = PageRequest.of(page, size); // page : zero-based page index, size : the size of the page to be returned,
           // pageable 적용, 생성일 기준 내림차순하여 findAll
-          return postRepository.findAllByAndDeletedIsNullOrderByCreatedAtDesc(pageable).stream()
+          Page<Post> postList;
+          switch(searchBy){
+               case "content": postList = postRepository.findAllByContentContainingAndDeletedIsNullOrderByCreatedAtDesc(search, pageable); break;
+               case "title": postList =  postRepository.findAllByTitleContainingAndDeletedIsNullOrderByCreatedAtDesc(search, pageable); break;
+               case "nickname": postList = postRepository.findAllByUsername(search, pageable); break;
+               default : postList = postRepository.findAllByAndDeletedIsNullOrderByCreatedAtDesc(pageable);
+          }
+          
+          List<PostResponseDto.AllPostResponseDto> data = postList.stream()
                .map(post -> {
                     boolean isLike = false;
                     // user login한 경우
@@ -63,10 +76,12 @@ public class PostService {
                     User author = userRepository.findByUsername(post.getUsername()).orElseThrow(
                          () -> new RestApiException(UserStatusCode.NO_USER)
                     );
+                    
                     // 탈퇴한경우 > nickname 수정필요
                     return new PostResponseDto.AllPostResponseDto(post, isLike, author.getNickname());
                })
                .collect(Collectors.toList());
+          return new PostResponseDto.AllPostResponseDtoWithTotalPage(postList.getTotalPages(), data);
      }
      
      //글 선택 조회
@@ -108,6 +123,12 @@ public class PostService {
 
 >>>>>>> suyess
           }
+          List<CommentNicknameInterface> commentNicknameList = commentRepository.findAllByPostIdOrderByCreatedDesc(post.getId());
+
+          List<Comment> commentList = commentNicknameList.stream()
+               .map(Comment::new).collect(Collectors.toList());
+          
+          post.setComments(commentList);
           return new PostResponseDto.DetailResponse(post, isLike, author);
      }
      
@@ -128,7 +149,7 @@ public class PostService {
                () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
           // 해당게시글작성자가 현재유저가 아닌 경우
-          if (post.getUsername().equals(user.getUsername())){
+          if (!post.getUsername().equals(user.getUsername())) {
                throw new RestApiException(CommonStatusCode.INVALID_USER);
           }
           

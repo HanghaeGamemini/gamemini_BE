@@ -25,6 +25,4 @@ public class CommentController {
     public ResponseEntity<PrivateResponseBody> deleteComment(@PathVariable Long commentId){
         return commentService.deleteComment(commentId);
     }
-
-
 }
