@@ -75,7 +75,7 @@ public class S3Uploader {
      }
      
      private Optional<File> convert(MultipartFile file) throws IOException {
-          File convertFile = new File("/media"+File.separator+file.getOriginalFilename()); // 이름겹치는 오류생길경우 여기부터 UUID 적용해도 될듯
+          File convertFile = new File("/home/ubuntu/temp"+File.separator+file.getOriginalFilename()); // 이름겹치는 오류생길경우 여기부터 UUID 적용해도 될듯
           if(convertFile.createNewFile()) {
                try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                     fos.write(file.getBytes());
@@ -84,6 +84,8 @@ public class S3Uploader {
           }
           return Optional.empty();
      }
+     
+     
      
      public void remove(String imgUrl, String dirName) {
           String fileName = dirName + "/" + imgUrl;

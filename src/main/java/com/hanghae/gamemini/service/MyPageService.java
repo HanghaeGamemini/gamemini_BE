@@ -1,5 +1,6 @@
 package com.hanghae.gamemini.service;
 
+import com.hanghae.gamemini.S3.S3Uploader;
 import com.hanghae.gamemini.dto.*;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,8 @@ import java.util.List;
 public class MyPageService {
 
     private final UserRepository userRepository;
-
+    
+    private final S3Uploader s3Uploader;
 
     private final CommentRepository commentRepository;
 
@@ -110,9 +113,13 @@ public class MyPageService {
     }
 
     @Transactional
-    public UpdateProfileResponseDto updateProfile(UpdateProfileRequestDto requestDto) {
+    public UpdateProfileResponseDto updateProfile(UpdateProfileRequestDto requestDto, MultipartFile file) {
         User user = SecurityUtil.getCurrentUser();
-        user.nicknameUpdate(requestDto.getNickname());
+        String imgUrl = null;
+        if(file != null) {
+            imgUrl = s3Uploader.upload(file, "userImage");
+        }
+        user.userUpdate(requestDto.getNickname(), imgUrl);
         userRepository.save(user);
 
         return new UpdateProfileResponseDto(user);
@@ -121,11 +128,6 @@ public class MyPageService {
     @Transactional
     public void deleteUser() {
         User user = SecurityUtil.getCurrentUser();
-//        //작성한 댓글 닉네임처리 추후 다른 방법으로 교체 후 삭제
-//        List<Comment> comments = commentRepository.findAllByNickname(user.getNickname());
-//        for(Comment comment : comments){
-//            comment.deletedUpdate();
-//        }
         user.deleteUser();
         userRepository.save(user);
     }
