@@ -27,7 +27,7 @@ public class CommentResponseDto {
 
     public CommentResponseDto(Comment comment) {
         this.id = comment.getId();
-//        this.profileUrl =
+        this.profileUrl = comment.getProfileUrl();
         this.content = comment.getContent();
         this.nickname = comment.isDeleted() ? "탈퇴한유저" : comment.getNickname();
         CreatedAt = comment.getCreatedAt();

@@ -7,9 +7,13 @@ public interface CommentNicknameInterface {
      Long getId();
      String getContent();
      Long getPostId();
+
+     String getProfileUrl();
      String getUsername();
 
      String getNickname();
+
+
 
      Boolean getDeleted();
      

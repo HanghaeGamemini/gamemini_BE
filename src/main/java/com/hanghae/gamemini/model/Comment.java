@@ -27,6 +27,8 @@ public class Comment extends Timestamped{
 
     @Column(nullable = false)
     private boolean deleted;
+    @Transient
+    private String profileUrl;
 
     public Comment(User user, Post post, CommentRequestDto requestDto) {
         this.username = user.getUsername();
@@ -41,9 +43,12 @@ public class Comment extends Timestamped{
         this.username = commentNicknameInterface.getUsername();
         this.nickname = commentNicknameInterface.getNickname();
         this.deleted = commentNicknameInterface.getDeleted();
+        this.profileUrl = commentNicknameInterface.getProfileUrl();
         this.setCreatedAt(commentNicknameInterface.getCreated_at());
         this.setModifiedAt(commentNicknameInterface.getModified_at());
     }
+
+
 
 
     public void deletedUpdate() {
