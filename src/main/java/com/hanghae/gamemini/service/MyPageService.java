@@ -126,7 +126,7 @@ public class MyPageService {
     @Transactional
     public UpdateProfileResponseDto updateProfile(UpdateProfileRequestDto requestDto) {
         User user = SecurityUtil.getCurrentUser();
-        MultipartFile file = requestDto.getMultipartFile();
+        MultipartFile file = requestDto.getFile();
         String imgUrl = null;
         if(file != null && file.getContentType() != null) {
             imgUrl = s3Uploader.upload(file, "userImage");
