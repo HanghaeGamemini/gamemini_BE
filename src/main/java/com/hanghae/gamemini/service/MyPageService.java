@@ -37,10 +37,7 @@ public class MyPageService {
     private final S3Uploader s3Uploader;
 
     private final CommentRepository commentRepository;
-
     private final PostRepository postRepository;
-
-
     private final LikeRepository likeRepository;
 
     //내가 작성한 게시글 찾기
@@ -49,19 +46,27 @@ public class MyPageService {
     public ResponseEntity<?> getMyPost(User user, int page , int size) {
         Pageable pageable = PageRequest.of(page,size);
          postRepository.findAllByOrderByCreatedAtDesc(pageable); //페이징 처리
+
+        //게시글과 like 연관을 지어야함
         List<Post> posts = postRepository.findAllByUsername(user.getUsername());
 
         List<PostResponseDto.AllPostResponseDto> allPostResponseDtos = new ArrayList<>();
 
+        boolean isLike;
+
+
         if (posts.isEmpty()) { //작성한 게시글이 없는 경우
             return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.NO_ARTICLE), HttpStatus.NOT_FOUND);
         }
+
         for (Post post : posts) {
             //post를 하나씩 하나씩 빼서 ENTITY로 리턴
-            PostResponseDto.AllPostResponseDto allPostResponseDto = new PostResponseDto.AllPostResponseDto(post);
+            isLike = likeRepository.existsByUserIdAndPostId(user.getId(),post.getId());
+            PostResponseDto.AllPostResponseDto allPostResponseDto = new PostResponseDto.AllPostResponseDto(post,user.getNickname(),isLike);
             allPostResponseDtos.add(allPostResponseDto);
         }
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, allPostResponseDtos), HttpStatus.OK);
+
     }
 
 
@@ -73,6 +78,9 @@ public class MyPageService {
         List<Likes> likesList = likeRepository.findByUserId(user.getId()); //좋아요가 있는지 확인
         List<PostResponseDto.AllPostResponseDto> allPostResponseDtos = new ArrayList<>();
 
+        boolean isLike;
+
+
         if (likesList.isEmpty()){//좋아요한 게시글이 없는 경우
             return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.NO_ARTICLE),HttpStatus.NOT_FOUND);
         }
@@ -83,7 +91,8 @@ public class MyPageService {
                     () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
             );
             //만약에 있으면
-            PostResponseDto.AllPostResponseDto allPostResponseDto1 = new PostResponseDto.AllPostResponseDto(post);
+            isLike = likeRepository.existsByUserIdAndPostId(user.getId(),post.getId());
+            PostResponseDto.AllPostResponseDto allPostResponseDto1 = new PostResponseDto.AllPostResponseDto(post,user.getNickname(),isLike);
             allPostResponseDtos.add(allPostResponseDto1);
 
         }
@@ -106,6 +115,8 @@ public class MyPageService {
         }
         for (Comment comment : comments) {
             CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
+
+
             commentResponseDtos.add(commentResponseDto);
 
         }

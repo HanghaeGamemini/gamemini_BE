@@ -55,7 +55,7 @@ public class PostResponseDto {
             this.ModifiedAt = post.getModifiedAt();
         }
 
-        public AllPostResponseDto(Post post) {
+        public AllPostResponseDto(Post post, String nickName,  boolean isLike) {
             this.id = post.getId();
             this.title = post.getTitle();
             this.content = post.getContent();
@@ -67,6 +67,8 @@ public class PostResponseDto {
             this.CreatedAt = post.getCreatedAt();
             this.ModifiedAt = post.getModifiedAt();
         }
+
+
     }
     
     @Getter
