@@ -48,7 +48,7 @@ public class MyPageController {
 
     }
 
-    @PutMapping("")
+    @PutMapping
     public ResponseEntity<PrivateResponseBody> updateProfile(
          @ModelAttribute UpdateProfileRequestDto requestDto){
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, myPageService.updateProfile(requestDto)), HttpStatus.OK);
