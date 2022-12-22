@@ -43,8 +43,9 @@ public class User {
 
 
 
-     public void nicknameUpdate(String nickname) {
+     public void userUpdate(String nickname, String profileUrl) {
           this.nickname = nickname;
+          this.profileUrl = profileUrl;
      }
 
      public void deleteUser() {
