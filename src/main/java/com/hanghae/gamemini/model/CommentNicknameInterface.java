@@ -13,8 +13,6 @@ public interface CommentNicknameInterface {
 
      String getNickname();
 
-
-
      Boolean getDeleted();
      
      LocalDateTime getCreated_at();
