@@ -4,6 +4,7 @@ https://foremost-tellurium-295.notion.site/4-SA-37c3447f61a24e1a92fa8c5a060fa1e7
 
 # 🎮Gammini(BE)🎮
 ### 내가 해본 게임 중 재미있던 게임들을 사진과 글로 추천, 설명해주는 사이트
+![gammini](https://user-images.githubusercontent.com/108880977/209127979-f73b58c7-04cc-434a-a8b3-0dfae04129a3.png)
 
 
 ---
