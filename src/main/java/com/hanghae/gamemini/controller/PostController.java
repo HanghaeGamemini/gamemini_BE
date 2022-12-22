@@ -62,7 +62,7 @@ public class PostController {
     
     // 게시글 수정페이지 불러오기
     @GetMapping("/update/{id}")
-    public ResponseEntity<PrivateResponseBody> updatePost(
+    public ResponseEntity<PrivateResponseBody> getUpdatePost(
          @PathVariable Long id){
         PostResponseDto.getUpdateResponse responseDto = postService.getUpdatePost(id);
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, responseDto), HttpStatus.OK);
@@ -72,9 +72,10 @@ public class PostController {
     @PutMapping("/{id}")
     public ResponseEntity<PrivateResponseBody> updatePost(
          @PathVariable Long id,
-         @RequestPart(value="requestDto", required = true) PostRequestDto postRequestDto,
-         @RequestPart(value="file", required = false) MultipartFile multipartFile){
-        postService.updatePost(id, postRequestDto, multipartFile);
+         @ModelAttribute PostRequestDto requestDto){
+        log.info(">>>>>>>>>>>> id : {}", id);
+        log.info(">>>>>>>>>>>>> content: {}, title: {}", requestDto.getContent(), requestDto.getTitle());
+        postService.updatePost(id, requestDto);
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.UPDATE_POST), HttpStatus.OK);
     }
 

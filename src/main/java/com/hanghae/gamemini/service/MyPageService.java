@@ -140,6 +140,10 @@ public class MyPageService {
     @Transactional
     public void deleteUser() {
         User user = SecurityUtil.getCurrentUser();
+        List<Comment> comments = commentRepository.findAllByUsername(user.getUsername());
+        for(Comment comment : comments){
+            comment.deletedUpdate();
+        }
         user.deleteUser();
         userRepository.save(user);
     }

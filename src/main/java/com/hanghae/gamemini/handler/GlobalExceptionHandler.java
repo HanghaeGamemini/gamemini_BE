@@ -92,7 +92,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      // 그외 에러들 핸들링
      @ExceptionHandler({Exception.class})
      public ResponseEntity<Object> handleAllException(Exception ex) {
-          log.warn("handleAllException", ex);
+          log.warn(">>>>>>>>>handleAllException", ex);
+          ex.printStackTrace();
           StatusCode statusCode = CommonStatusCode.INTERNAL_SERVER_ERROR;
           return handleExceptionInternal(statusCode);
      }

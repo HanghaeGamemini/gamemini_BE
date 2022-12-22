@@ -127,8 +127,9 @@ public class PostService {
      
      //게시글 수정
      @Transactional
-     public void updatePost(Long id, PostRequestDto postRequestDto, MultipartFile file) {
+     public void updatePost(Long id, PostRequestDto postRequestDto) {
           User user = SecurityUtil.getCurrentUser();
+          MultipartFile file = postRequestDto.getFile();
           Post post = postRepository.findByIdAndDeletedIsFalse(id).orElseThrow(
                () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
           );
@@ -138,7 +139,7 @@ public class PostService {
           }
           
           String imgUrl = null;
-          if (!file.isEmpty()) {
+          if (file != null && file.getContentType() != null) {
                imgUrl = s3Uploader.upload(file, "postImage");
           }
           post.update(postRequestDto, imgUrl);
