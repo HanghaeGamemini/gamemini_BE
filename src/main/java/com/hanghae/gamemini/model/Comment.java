@@ -43,7 +43,7 @@ public class Comment extends Timestamped{
         this.username = commentNicknameInterface.getUsername();
         this.nickname = commentNicknameInterface.getNickname();
         this.deleted = commentNicknameInterface.getDeleted();
-        this.profileUrl = commentNicknameInterface.getProfileUrl();
+        this.profileUrl = commentNicknameInterface.getProfile_url();
         this.setCreatedAt(commentNicknameInterface.getCreated_at());
         this.setModifiedAt(commentNicknameInterface.getModified_at());
     }
