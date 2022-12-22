@@ -25,6 +25,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByUsername(String username);
 
 
+    //
     @Query(nativeQuery = true,
             value = "Select p.* from post p join users u on p.username = u.username "
                      +"where u.nickname like %:nickname% and p.deleted is null "

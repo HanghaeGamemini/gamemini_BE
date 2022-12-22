@@ -33,23 +33,9 @@ public class UserController {
           userService.signUp(requestDto);
           return new ResponseEntity<>(new PrivateResponseBody(UserStatusCode.USER_SIGNUP_SUCCESS), HttpStatus.OK);
      }
-     
-     // throw error
-     // jwt
-     
-     // AuthenticationPrincipal 사용예시
-     /*
-     @PostMapping("/login")
-     public String login(@AuthenticationPrincipal UserDetails userDetails)
-      */
 
-//     @PostMapping ("/login")
-//     public ResponseDto login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
-//          return userService.login(loginRequestDto, response);
-//     }
      @PostMapping ("/login")
      public ResponseEntity<PrivateResponseBody> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
-          System.out.println("longcontroller");
           return new ResponseEntity<>(new PrivateResponseBody(UserStatusCode.USER_LOGIN_SUCCESS, userService.login(loginRequestDto, response)), HttpStatus.OK);
      }
 }
