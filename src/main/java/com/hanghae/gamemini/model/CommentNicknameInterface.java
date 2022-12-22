@@ -8,8 +8,10 @@ public interface CommentNicknameInterface {
      String getContent();
      Long getPostId();
      String getUsername();
-     
+
      String getNickname();
+
+     Boolean getDeleted();
      
      LocalDateTime getCreated_at();
      LocalDateTime getModified_at();
