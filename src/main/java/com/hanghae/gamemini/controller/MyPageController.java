@@ -49,9 +49,8 @@ public class MyPageController {
 
     @PutMapping("")
     public ResponseEntity<PrivateResponseBody> updateProfile(
-         @RequestPart(value="requestDto", required = true) UpdateProfileRequestDto requestDto,
-         @RequestPart(value="file", required = false) MultipartFile multipartFile){
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, myPageService.updateProfile(requestDto, multipartFile)), HttpStatus.OK);
+         @ModelAttribute UpdateProfileRequestDto requestDto){
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, myPageService.updateProfile(requestDto)), HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteuser")
