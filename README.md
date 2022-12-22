@@ -35,7 +35,7 @@ https://foremost-tellurium-295.notion.site/4-SA-37c3447f61a24e1a92fa8c5a060fa1e7
 >- countQuery 사용하여 페이징처리도 동시 적용
  
  ## 🧩swagger
- http://3.34.98.133/swagger-ui/index.html#/
+3.34/98/133/api/doc
  ---
  ### Member
  BE 😶장영주, 😶최재하,😶 김수예
