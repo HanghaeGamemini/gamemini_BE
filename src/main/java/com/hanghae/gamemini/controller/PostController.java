@@ -1,21 +1,26 @@
 package com.hanghae.gamemini.controller;
 
 
+import com.amazonaws.util.IOUtils;
+import com.hanghae.gamemini.dto.PostEncodeRequestDto;
 import com.hanghae.gamemini.dto.PostRequestDto;
 import com.hanghae.gamemini.dto.PostResponseDto;
 import com.hanghae.gamemini.dto.PrivateResponseBody;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
-import com.hanghae.gamemini.security.UserDetailsImpl;
 import com.hanghae.gamemini.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileItem;
+import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.nio.file.Files;
+import java.util.Base64;
 
 @Slf4j
 @RestController
@@ -29,7 +34,7 @@ public class PostController {
     @GetMapping
     public ResponseEntity<PrivateResponseBody> getPost(
          @RequestParam(value="search", defaultValue = "") String search,
-         @RequestParam(value="searchBy", defaultValue = "") String searchBy,
+         @RequestParam(value="searchBy", defaultValue = "all") String searchBy,
          @RequestParam(value = "page", defaultValue = "1") int page,
          @RequestParam(value="size", defaultValue = "8") int size
     ){
@@ -46,9 +51,43 @@ public class PostController {
     @PostMapping
     public ResponseEntity<PrivateResponseBody> createPost(
          @RequestPart(value="requestDto", required = true) PostRequestDto requestDto,
-         @RequestPart(value="file", required = false) MultipartFile multipartFile,
-         HttpServletRequest request){
+         @RequestPart(value="file", required = false) MultipartFile multipartFile){
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.CREATE_POST, postService.createPost(requestDto, multipartFile)), HttpStatus.OK);
+    }
+    
+    @PostMapping("/test")
+    public void createPost2(@RequestBody PostEncodeRequestDto requestDto){
+        File file = null;
+        String baseImageUrl = requestDto.getImageUrl();
+        String imageOriginName = baseImageUrl.substring(baseImageUrl.indexOf(":")+1 , baseImageUrl.indexOf(";")).replace("/", ".");
+        String baseUrl = baseImageUrl.substring(baseImageUrl.indexOf(",")+1);
+        
+        BufferedOutputStream bos = null;
+        java.io.FileOutputStream fos = null;
+        try {
+            byte[] bytes = Base64.getDecoder().decode(baseUrl);
+            file=new File("C:\\Users\\joj10\\Desktop\\test\\" + imageOriginName);
+            fos = new java.io.FileOutputStream(file);
+            bos = new BufferedOutputStream(fos);
+            bos.write(bytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (bos != null) {
+                try {
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
     
     // 게시글 수정페이지 불러오기
