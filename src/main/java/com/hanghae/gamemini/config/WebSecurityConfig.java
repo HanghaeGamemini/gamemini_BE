@@ -57,8 +57,6 @@ public class WebSecurityConfig {
                //서버는 JWT 토큰을 검증하고 토큰의 정보를 사용하여 사용자의 인증을 진행해주는 Spring Security 에 등록한 JwtAuthFilter 를 사용하여 인증/인가를 처리한다.
                .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
           
-          // Custom 로그인 페이지 사용
-          http.formLogin().loginPage("/api/user/login-page").permitAll();
           // 접근 제한 페이지 이동 설정
 //          http.exceptionHandling().accessDeniedPage("/api/user/forbidden");
           
