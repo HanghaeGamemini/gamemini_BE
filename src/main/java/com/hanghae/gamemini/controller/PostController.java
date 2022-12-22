@@ -2,10 +2,7 @@ package com.hanghae.gamemini.controller;
 
 
 import com.amazonaws.util.IOUtils;
-import com.hanghae.gamemini.dto.PostEncodeRequestDto;
-import com.hanghae.gamemini.dto.PostRequestDto;
-import com.hanghae.gamemini.dto.PostResponseDto;
-import com.hanghae.gamemini.dto.PrivateResponseBody;
+import com.hanghae.gamemini.dto.*;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -50,45 +47,18 @@ public class PostController {
     //게시글 작성
     @PostMapping
     public ResponseEntity<PrivateResponseBody> createPost(
-         @RequestPart(value="requestDto", required = true) PostRequestDto requestDto,
-         @RequestPart(value="file", required = false) MultipartFile multipartFile){
-        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.CREATE_POST, postService.createPost(requestDto, multipartFile)), HttpStatus.OK);
+         @ModelAttribute PostRequestDto requestDto){
+        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.CREATE_POST, postService.createPost(requestDto)), HttpStatus.OK);
     }
     
-    @PostMapping("/test")
-    public void createPost2(@RequestBody PostEncodeRequestDto requestDto){
-        File file = null;
-        String baseImageUrl = requestDto.getImageUrl();
-        String imageOriginName = baseImageUrl.substring(baseImageUrl.indexOf(":")+1 , baseImageUrl.indexOf(";")).replace("/", ".");
-        String baseUrl = baseImageUrl.substring(baseImageUrl.indexOf(",")+1);
-        
-        BufferedOutputStream bos = null;
-        java.io.FileOutputStream fos = null;
-        try {
-            byte[] bytes = Base64.getDecoder().decode(baseUrl);
-            file=new File("C:\\Users\\joj10\\Desktop\\test\\" + imageOriginName);
-            fos = new java.io.FileOutputStream(file);
-            bos = new BufferedOutputStream(fos);
-            bos.write(bytes);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (bos != null) {
-                try {
-                    bos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
+//    @PostMapping("/test")
+//    public ResponseEntity<PrivateResponseBody> createPost3(
+//         @RequestPart(value="requestDto", required = true) PostRequestDto requestDto,
+//         @RequestPart(value="file", required = false) MultipartFile multipartFile
+//         @ModelAttribute PostRequestDto2 requestDto){
+//        System.out.println(">>>>>>>>"+ requestDto.getFiles());
+//        return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.CREATE_POST, postService.createPost2(requestDto)), HttpStatus.OK);
+//    }
     
     // 게시글 수정페이지 불러오기
     @GetMapping("/update/{id}")

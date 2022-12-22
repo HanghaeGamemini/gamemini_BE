@@ -2,6 +2,7 @@ package com.hanghae.gamemini.service;
 
 import com.hanghae.gamemini.S3.S3Uploader;
 import com.hanghae.gamemini.dto.PostRequestDto;
+import com.hanghae.gamemini.dto.PostRequestDto2;
 import com.hanghae.gamemini.dto.PostResponseDto;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.errorcode.UserStatusCode;
@@ -113,8 +114,9 @@ public class PostService {
      
      //게시글 작성
      @Transactional
-     public PostResponseDto.createResponse createPost(PostRequestDto postRequestDto, MultipartFile file) {
+     public PostResponseDto.createResponse createPost(PostRequestDto postRequestDto) {
           User user = SecurityUtil.getCurrentUser();
+          MultipartFile file = postRequestDto.getFile();
           String imgUrl = null;
           if(file != null && file.getContentType() != null) {
                imgUrl = s3Uploader.upload(file, "postImage");

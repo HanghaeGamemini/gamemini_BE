@@ -1,6 +1,7 @@
 package com.hanghae.gamemini.model;
 
 import com.hanghae.gamemini.dto.PostRequestDto;
+import com.hanghae.gamemini.dto.PostRequestDto2;
 import io.swagger.annotations.Api;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,7 +58,6 @@ public class Post extends Timestamped {
         this.imgUrl = imgUrl;
         this.deleted = false;
     }
-
 
     public void update(PostRequestDto postRequestDto, String imgUrl){
         this.title = postRequestDto.getTitle();
