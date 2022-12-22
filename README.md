@@ -44,4 +44,5 @@ https://foremost-tellurium-295.notion.site/4-SA-37c3447f61a24e1a92fa8c5a060fa1e7
  
  
  - FE 프론트엔드 깃허브동이동
+ https://github.com/HanghaeGamemini/gmini_front
  
