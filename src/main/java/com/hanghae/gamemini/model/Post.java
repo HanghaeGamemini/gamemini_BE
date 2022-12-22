@@ -58,7 +58,6 @@ public class Post extends Timestamped {
         this.deleted = false;
     }
 
-
     public void update(PostRequestDto postRequestDto, String imgUrl){
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();

@@ -2,8 +2,10 @@ package com.hanghae.gamemini.service;
 
 import com.hanghae.gamemini.S3.S3Uploader;
 import com.hanghae.gamemini.dto.PostRequestDto;
+import com.hanghae.gamemini.dto.PostRequestDto2;
 import com.hanghae.gamemini.dto.PostResponseDto;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
+import com.hanghae.gamemini.errorcode.UserStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
 import com.hanghae.gamemini.model.Comment;
 import com.hanghae.gamemini.model.CommentNicknameInterface;
@@ -59,7 +61,7 @@ public class PostService {
           Page<Post> postList;
           switch(searchBy){
                case "content": postList = postRepository.findAllByContentContainingAndDeletedIsNullOrderByCreatedAtDesc(search, pageable); break;
-               case "title": postList =  postRepository.findAllByTitleContainingAndDeletedIsNullOrderByCreatedAtDesc(search, pageable); break;
+               case "title": postList =  postRepository.findAllByTitleContainingAndDeletedIsFalseOrderByCreatedAtDesc(search, pageable); break;
                case "nickname": postList = postRepository.findAllByUsername(search, pageable); break;
                default : postList = postRepository.findAllByAndDeletedIsFalseOrderByCreatedAtDesc(pageable);
           }
@@ -75,7 +77,9 @@ public class PostService {
                          isLike = likeRepository.existsByUserIdAndPostId(user.getId(), post.getId());
                     }
                     // 해당 게시글 저자 확인
-                    User author = userRepository.findByUsername(post.getUsername()).orElse(new User());
+                    User author = userRepository.findByUsername(post.getUsername()).orElseThrow(
+                         () -> new RestApiException(UserStatusCode.NO_USER)
+                    );
                     // 탈퇴한경우 > nickname 수정필요
                     return new PostResponseDto.AllPostResponseDto(post, isLike, author);
                })
@@ -110,10 +114,11 @@ public class PostService {
      
      //게시글 작성
      @Transactional
-     public PostResponseDto.createResponse createPost(PostRequestDto postRequestDto, MultipartFile file) {
+     public PostResponseDto.createResponse createPost(PostRequestDto postRequestDto) {
           User user = SecurityUtil.getCurrentUser();
+          MultipartFile file = postRequestDto.getFile();
           String imgUrl = null;
-          if(file != null) {
+          if(file != null && file.getContentType() != null) {
                imgUrl = s3Uploader.upload(file, "postImage");
           }
           Post post = postRepository.saveAndFlush(new Post(postRequestDto, user.getUsername(), imgUrl));
@@ -213,6 +218,7 @@ public class PostService {
           );
           return new PostResponseDto.getUpdateResponse(post, user);
      }
+     
 }
 
 

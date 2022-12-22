@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -48,7 +49,8 @@ public class MyPageController {
     }
 
     @PutMapping("")
-    public ResponseEntity<PrivateResponseBody> updateProfile(@RequestBody UpdateProfileRequestDto requestDto){
+    public ResponseEntity<PrivateResponseBody> updateProfile(
+         @ModelAttribute UpdateProfileRequestDto requestDto){
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.OK, myPageService.updateProfile(requestDto)), HttpStatus.OK);
     }
 
@@ -57,8 +59,6 @@ public class MyPageController {
         myPageService.deleteUser();
         return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.DELETE_USER), HttpStatus.OK);
     }
-
-    
 }
 
 

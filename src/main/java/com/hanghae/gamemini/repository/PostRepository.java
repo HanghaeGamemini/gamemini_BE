@@ -17,7 +17,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     
     Page<Post> findAllByContentContainingAndDeletedIsNullOrderByCreatedAtDesc(String search, Pageable pageable);
-    Page<Post> findAllByTitleContainingAndDeletedIsNullOrderByCreatedAtDesc(String search, Pageable pageable);
+    Page<Post> findAllByTitleContainingAndDeletedIsFalseOrderByCreatedAtDesc(String search, Pageable pageable);
     Page<Post> findAllByAndDeletedIsFalseOrderByCreatedAtDesc(Pageable pageable);
 
 //    List<Post> findAllByDeletedIsFalseOrderByCreatedAtDesc(Pageable pageable);

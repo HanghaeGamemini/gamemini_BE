@@ -1,5 +1,6 @@
 package com.hanghae.gamemini.service;
 
+import com.hanghae.gamemini.dto.LikeResponseDto;
 import com.hanghae.gamemini.dto.PrivateResponseBody;
 import com.hanghae.gamemini.errorcode.CommonStatusCode;
 import com.hanghae.gamemini.exception.RestApiException;
@@ -35,17 +36,17 @@ public class LikeService {
             post.like();
             Likes likes = new Likes(user, post);
             likeRepository.save(likes);
-            return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.POST_LIKE), HttpStatus.OK);
+            return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.POST_LIKE, new LikeResponseDto(likes.isLike(), post.getLikes())), HttpStatus.OK);
         } else {
             if(like.isLike()){//좋아요눌려있을때취소
                 post.likeCancel();
                 likeRepository.deleteById(like.getId());
-                return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.POST_LIKE_CANCEL), HttpStatus.OK);
+                return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.POST_LIKE_CANCEL, new LikeResponseDto(false, post.getLikes())), HttpStatus.OK);
             } else{//안눌려있을때다시좋아요
                 post.like();
                 Likes likes = new Likes(user, post);
                 likeRepository.save(likes);
-                return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.POST_LIKE), HttpStatus.OK);
+                return new ResponseEntity<>(new PrivateResponseBody(CommonStatusCode.POST_LIKE, new LikeResponseDto(likes.isLike(), post.getLikes())), HttpStatus.OK);
             }
         }
     }

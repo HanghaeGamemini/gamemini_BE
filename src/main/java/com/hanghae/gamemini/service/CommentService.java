@@ -26,7 +26,7 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto postComment(Long postId, CommentRequestDto requestDto) {
-        Post post = postRepository.findById(postId).orElseThrow(
+        Post post = postRepository.findByIdAndDeletedIsFalse(postId).orElseThrow(
                 () -> new RestApiException(CommonStatusCode.NO_ARTICLE)
         );
 
