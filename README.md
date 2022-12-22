@@ -37,4 +37,11 @@ https://foremost-tellurium-295.notion.site/4-SA-37c3447f61a24e1a92fa8c5a060fa1e7
  
  
  ### Member
- 😶장영주, 😶최재하,😶 김수예
+ BE 😶장영주, 😶최재하,😶 김수예
+ 
+ 
+ FE 😀허정은, 😀한예진
+ 
+ 
+ - FE 프론트엔드 깃허브동이동
+ 
