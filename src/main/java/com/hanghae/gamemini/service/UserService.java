@@ -1,13 +1,16 @@
 package com.hanghae.gamemini.service;
 
+
 import com.hanghae.gamemini.dto.LoginRequestDto;
-import com.hanghae.gamemini.dto.ResponseDto;
 import com.hanghae.gamemini.dto.SignupRequestDto;
-import com.hanghae.gamemini.entity.User;
+import com.hanghae.gamemini.dto.tempLoginResponseDto;
+import com.hanghae.gamemini.errorcode.UserStatusCode;
+import com.hanghae.gamemini.exception.RestApiException;
 import com.hanghae.gamemini.jwt.JwtUtil;
+import com.hanghae.gamemini.model.User;
 import com.hanghae.gamemini.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,33 +25,50 @@ public class UserService {
 
     private final JwtUtil jwtUtil;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Transactional
-    public ResponseDto signup(SignupRequestDto requestDto) {
+    public void signUp(SignupRequestDto requestDto) {
+        String pw = requestDto.getPassword();
+        String pwdCheck = requestDto.getPasswordCheck();
+        //비밀번호체크
+        if(!pw.equals(pwdCheck)){
+            throw new RestApiException(UserStatusCode.PASSWORD_CHECK);
+        }
+        //username중복체크
         Optional<User> found = userRepository.findByUsername(requestDto.getUsername());
         if (found.isPresent()){
-            return new ResponseDto("중복된 아이디입니다.", HttpStatus.BAD_REQUEST.value());
+            throw new RestApiException(UserStatusCode.OVERLAPPED_USERNAME);
+        }
+        //닉네임 중복체크
+        Optional<User> nicknameCheck = userRepository.findByNickname(requestDto.getNickname());
+        if (nicknameCheck.isPresent()){
+            throw new RestApiException(UserStatusCode.OVERLAPPED_NICKNAME);
         }
 
-        userRepository.save(new User(requestDto));
+        String password = passwordEncoder.encode(requestDto.getPassword());
 
-        return new ResponseDto("회원가입 성공", HttpStatus.OK.value());
+        userRepository.save(new User(requestDto, password));
     }
 
     @Transactional
-    public ResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public tempLoginResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
 
         // 사용자 확인
         User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
+                () -> new RestApiException(UserStatusCode.NO_USER)
         );
-        // 비밀번호 확인
-        if(!user.getPassword().equals(password)){
-            throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        if(user.getDeleted()){
+            throw  new RestApiException(UserStatusCode.DELETE_USER);
         }
 
+        // 비밀번호 확인
+        if(!passwordEncoder.matches(password, user.getPassword())){
+            throw  new RestApiException(UserStatusCode.WRONG_PASSWORD);
+        }
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
-        return new ResponseDto("로그인 성공", HttpStatus.OK.value());
+        return new tempLoginResponseDto(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
     }
 }
